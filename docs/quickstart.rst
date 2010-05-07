@@ -1,17 +1,16 @@
 .. _quickstart:
 
-Quickstart
+快速上手
 ==========
 
-Eager to get started?  This page gives a good introduction in how to gets
-started with Flask.  This assumes you already have Flask installed.  If
-you do not, head over to the :ref:`installation` section.
+迫不及待想开始了吗?本文就如何上手Flask提供了一个很好的介绍.
+假定你已经安装好了Flask.如果没有的话，请参考 :ref:`installation` 这一节.
 
 
-A Minimal Application
+一个最小的应用
 ---------------------
 
-A minimal Flask application looks something like that::
+一个最小的Flask应用程序看起来像是这样::
 
     from flask import Flask
     app = Flask(__name__)
@@ -23,27 +22,26 @@ A minimal Flask application looks something like that::
     if __name__ == '__main__':
         app.run()
 
-Just save it as `hello.py` or something similar and run it with your
-Python interpreter.  Make sure to not call your application `flask.py`
-because this would conflict with Flask itself.
+把它存为 `hello.py` 或其它相似的文件名，然后用python解释器运行这个文件.
+请确保你的程序名不是叫做 `flask.py` ,因为这样会和Flask本身发生冲突.
 
 ::
 
     $ python hello.py
      * Running on http://127.0.0.1:5000/
 
-Head over to `http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_, you should
-see your hello world greeting.
+把浏览器指向 `http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_, 你将看到
+你的 hello world的问候.
 
-So what did that code do?
+那么这段代码到底做了什么?
 
-1. first we imported the :class:`~flask.Flask` class.  An instance of this
-   class will be our WSGI application.
-2. next we create an instance of it.  We pass it the name of the module /
-   package.  This is needed so that Flask knows where it should look for
-   templates, static files and so on.
-3. Then we use the :meth:`~flask.Flask.route` decorator to tell Flask
-   what URL should trigger our function.
+1. 首先我们导入了 :class:`~flask.Flask` 类.这个类的一个实例将会是我们的
+   WSGI程序.
+2. 接下来我实们来例化这个类.我们把模块/包的名字传给它,这样Flask就会知道它
+   将要到哪里寻找模板，静态文件之类的东西.
+3. 然后我们使用 :meth:`~flask.Flask.route` 装饰器告诉Flask哪个URL将会触发
+   我们的函数.
+4.
 4. The function then has a name which is also used to generate URLs to
    that particular function, and returns the message we want to display in
    the user's browser.

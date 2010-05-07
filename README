@@ -1,10 +1,13 @@
 
                           // Flask //
 
-         because sometimes a pocket knife is not enough
+         因为有些时候一把小刀还不够
 
 
     ~ What is Flask?
+    ~ 什么是Flask?
+
+      Flask是一个基于Werkzeug和Jinja2的Python微型框架.
 
       Flask is a microframework for Python based on Werkzeug
       and Jinja2.  It's intended for small scale applications
