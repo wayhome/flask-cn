@@ -3,7 +3,7 @@
 快速上手
 ==========
 
-迫不及待想开始了吗?本文就如何上手Flask提供了一个很好的介绍.
+急于开始了吗?本文就如何上手Flask提供了一个很好的介绍.
 假定你已经安装好了Flask.如果没有的话，请参考 :ref:`installation` 这一节.
 
 
@@ -41,37 +41,31 @@
    将要到哪里寻找模板，静态文件之类的东西.
 3. 然后我们使用 :meth:`~flask.Flask.route` 装饰器告诉Flask哪个URL将会触发
    我们的函数.
-4.
-4. The function then has a name which is also used to generate URLs to
-   that particular function, and returns the message we want to display in
-   the user's browser.
-5. Finally we use the :meth:`~flask.Flask.run` function to run the
-   local server with our application.  The ``if __name__ == '__main__':``
-   makes sure the server only runs if the script is executed directly from
-   the Python interpreter and not used as imported module.
+4. 这个函数还有一个作用是为特定的函数生成URLS，并返回我们想要显示在用户浏
+   览器的信息.
+5. 最后我们用 :meth:`~flask.Flask.run` 函数来运行本地服务器以及我们的应用.
+   ``if __name__ == '__main__':`` 确保了服务器只会在直接用Python解释器执行
+   该脚本的时候运行,而不会在导入模块的时候运行.
 
-To stop the server, hit control-C.
+要停止服务器，按 Ctrl+C.
 
 .. _public-server:
 
-.. admonition:: Externally Visible Server
+.. admonition:: 外部可见的服务器
 
-   If you run the server you will notice that the server is only available
-   from your own computer, not from any other in the network.  This is the
-   default because in debugging mode a user of the application can execute
-   arbitrary Python code on your computer.  If you have `debug` disabled
-   or trust the users on your network, you can make the server publicly
-   available.
+   当你运行服务器时你可能会注意到该服务器仅能从你自己的电脑访问，网络中的
+   其它地方都将不能访问.这是因为默认启用的调试模式中，应用程序的用户可以执
+   行你的电脑上的任意Python代码。如果你禁用了 `调试` 或者信任你所在的网络
+   中的用户，你可以使你的服务器公开可访问.
 
-   Just change the call of the :meth:`~flask.Flask.run` method to look
-   like this::
+   只需要像这样更改 :meth:`~flask.Flask.run` 方法 ::
 
        app.run(host='0.0.0.0')
 
-   This tells your operating system to listen on a public IP.
+   这样告诉了你的操作系统去监听一个公开的IP.
 
 
-Debug Mode
+调试模式
 ----------
 
 Now that :meth:`~flask.Flask.run` method is nice to start a local
