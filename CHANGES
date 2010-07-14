@@ -1,0 +1,125 @@
+Flask Changelog
+===============
+
+Here you can see the full list of changes between each Flask release.
+
+Version 0.6
+-----------
+
+Release date to be announced, codename to be decided.
+
+- after request functions are now called in reverse order of
+  registration.
+- OPTIONS is now automatically implemented by Flask unless the
+  application explictly adds 'OPTIONS' as method to the URL rule.
+  In this case no automatic OPTIONS handling kicks in.
+- static rules are now even in place if there is no static folder
+  for the module.  This was implemented to aid GAE which will
+  remove the static folder if it's part of a mapping in the .yml
+  file.
+- the :attr:`~flask.Flask.config` is now available in the templates
+  as `config`.
+- context processors will no longer override values passed directly
+  to the render function.
+
+Version 0.5.1
+-------------
+
+Bugfix Release, released on July 6th 2010
+
+- fixes an issue with template loading from directories when modules
+  where used.
+
+Version 0.5
+-----------
+
+Released on July 6th 2010, codename Calvados
+
+- fixed a bug with subdomains that was caused by the inability to
+  specify the server name.  The server name can now be set with
+  the `SERVER_NAME` config key.  This key is now also used to set
+  the session cookie cross-subdomain wide.
+- autoescaping is no longer active for all templates.  Instead it
+  is only active for ``.html``, ``.htm``, ``.xml`` and ``.xhtml``.
+  Inside templates this behaviour can be changed with the
+  ``autoescape`` tag.
+- refactored Flask internally.  It now consists of more than a
+  single file.
+- :func:`flask.send_file` now emits etags and has the ability to
+  do conditional responses builtin.
+- (temporarily) dropped support for zipped applications.  This was a
+  rarely used feature and led to some confusing behaviour.
+- added support for per-package template and static-file directories.
+- removed support for `create_jinja_loader` which is no longer used
+  in 0.5 due to the improved module support.
+- added a helper function to expose files from any directory.
+
+Version 0.4
+-----------
+
+Released on June 18th 2010, codename Rakia
+
+- added the ability to register application wide error handlers
+  from modules.
+- :meth:`~flask.Flask.after_request` handlers are now also invoked
+  if the request dies with an exception and an error handling page
+  kicks in.
+- test client has not the ability to preserve the request context
+  for a little longer.  This can also be used to trigger custom
+  requests that do not pop the request stack for testing.
+- because the Python standard library caches loggers, the name of
+  the logger is configurable now to better support unittests.
+- added `TESTING` switch that can activate unittesting helpers.
+- the logger switches to `DEBUG` mode now if debug is enabled.
+
+Version 0.3.1
+-------------
+
+Bugfix release, released on May 28th 2010
+
+- fixed a error reporting bug with :meth:`flask.Config.from_envvar`
+- removed some unused code from flask
+- release does no longer include development leftover files (.git
+  folder for themes, built documentation in zip and pdf file and
+  some .pyc files)
+
+Version 0.3
+-----------
+
+Released on May 28th 2010, codename Schnaps
+
+- added support for categories for flashed messages.
+- the application now configures a :class:`logging.Handler` and will
+  log request handling exceptions to that logger when not in debug
+  mode.  This makes it possible to receive mails on server errors
+  for example.
+- added support for context binding that does not require the use of
+  the with statement for playing in the console.
+- the request context is now available within the with statement making
+  it possible to further push the request context or pop it.
+- added support for configurations.
+
+Version 0.2
+-----------
+
+Released on May 12th 2010, codename Jägermeister
+
+- various bugfixes
+- integrated JSON support
+- added :func:`~flask.get_template_attribute` helper function.
+- :meth:`~flask.Flask.add_url_rule` can now also register a
+  view function.
+- refactored internal request dispatching.
+- server listens on 127.0.0.1 by default now to fix issues with chrome.
+- added external URL support.
+- added support for :func:`~flask.send_file`
+- module support and internal request handling refactoring
+  to better support pluggable applications.
+- sessions can be set to be permanent now on a per-session basis.
+- better error reporting on missing secret keys.
+- added support for Google Appengine.
+
+Version 0.1
+-----------
+
+First public preview release.

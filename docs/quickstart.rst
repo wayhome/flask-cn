@@ -68,25 +68,24 @@
 调试模式
 ----------
 
-Now that :meth:`~flask.Flask.run` method is nice to start a local
-development server, but you would have to restart it manually after each
-change you do to code.  That is not very nice and Flask can do better.  If
-you enable the debug support the server will reload itself on code changes
-and also provide you with a helpful debugger if things go wrong.
+虽然 :meth:`~flask.Flask.run` 方法很适于启动一个本地的测试服务器,
+但是你每次修改代码后都得重启它.这样显然不好,Flask当然可以做得更好.
+如果你开启服务器的debug支持,那么每次代码更改后服务器都会自动重启，
+如果出现问题的话，还会提供给你一个有用的调试器.
 
-There are two ways to enable debugging.  Either set that flag on the
-applciation object::
+
+有两种方法来开启debug模式.你可以在application对象上设置标志位 ::
 
     app.debug = True
     app.run()
 
-Or pass it to run::
+或者作为run方法的一个参数传入 ::
 
     app.run(debug=True)
 
-Both will have exactly the same effect.
+两者均有完全相同的效果.
 
-.. admonition:: Attention
+.. admonition:: 注意事项
 
    The interactive debugger however does not work in forking environments
    which makes it nearly impossible to use on production servers but the
@@ -102,7 +101,7 @@ Screenshot of the debugger in action:
    :alt: screenshot of debugger in action
 
 
-Routing
+路由
 -------
 
 As you have seen above, the :meth:`~flask.Flask.route` decorator is used
@@ -120,7 +119,7 @@ Here some examples::
         return 'Hello World'
 
 
-Variable Rules
+变量规则
 ``````````````
 
 Modern web applications have beautiful URLs.  This helps people remember
@@ -152,7 +151,7 @@ The following converters exist:
 `path`      like the default but also accepts slashes
 =========== ===========================================
 
-URL Building
+构建URL
 ````````````
 
 If it can match URLs, can it also generate them?  Of course you can.  To
@@ -199,7 +198,7 @@ templates?  There are three good reasons for this:
    handle that properly for you.
 
 
-HTTP Methods
+HTTP 方法
 ````````````
 
 HTTP (the protocol web applications are speaking) knows different methods
@@ -268,7 +267,7 @@ speak HTTP)
 
 .. _HTTP RFC: http://www.ietf.org/rfc/rfc2068.txt
 
-Static Files
+静态文件
 ------------
 
 Dynamic web applications need static files as well.  That's usually where
@@ -284,7 +283,7 @@ name::
 
 The file has to be stored on the filesystem as ``static/style.css``.
 
-Rendering Templates
+模板渲染
 -------------------
 
 Generating HTML from within Python is not fun, and actually pretty
@@ -369,7 +368,7 @@ u'Marked up \xbb HTML'
    information.
 
 
-Accessing Request Data
+访问 Request 数据
 ----------------------
 
 For web applications it's crucial to react to the data a client sent to
@@ -381,7 +380,7 @@ manages to still be threadsafe.  The answer are context locals:
 
 .. _context-locals:
 
-Context Locals
+局部上下文
 ``````````````
 
 .. admonition:: Insider Information
@@ -428,7 +427,7 @@ The other possibility is passing a whole WSGI environment to the
     with app.request_context(environ):
         assert request.method == 'POST'
 
-The Request Object
+Request 对象
 ``````````````````
 
 The request object is documented in the API section and we will not cover
@@ -475,7 +474,7 @@ For a full list of methods and attribtues on that object, head over to the
 :class:`~flask.request` documentation.
 
 
-File Uploads
+文件上传
 ````````````
 
 Obviously you can handle uploaded files with Flask just as easy.  Just
@@ -529,7 +528,7 @@ but instead use the :ref:`sessions` in Flask that add some security on top
 of cookies for you.
 
 
-Redirects and Errors
+跳转和错误
 --------------------
 
 To redirect a user to somewhere else you can use the
@@ -567,7 +566,7 @@ not found.  By default 200 is assumed which translats to: all went well.
 
 .. _sessions:
 
-Sessions
+会话
 --------
 
 Besides the request object there is also a second object called
@@ -611,7 +610,7 @@ sessions work::
 The here mentioned :func:`~flask.escape` does escaping for you if you are
 not using the template engine (like in this example).
 
-Message Flashing
+消息闪烁
 ----------------
 
 Good applications and user interfaces are all about feedback.  If the user
