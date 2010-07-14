@@ -4,36 +4,33 @@
          因为有些时候一把小刀还不够
 
 
-    ~ What is Flask?
     ~ 什么是Flask?
 
-      Flask是一个基于Werkzeug和Jinja2的Python微型框架.
+      Flask是一个基于Werkzeug和Jinja2的Python微型框架.它基于我们心目中最好的意图开发，
+      适用于小规模的应用.
 
-      Flask is a microframework for Python based on Werkzeug
-      and Jinja2.  It's intended for small scale applications
-      and was developped with best intentions in mind.
 
-    ~ Is it ready?
+    ~ 它是完善的吗?
 
       A preview release is out now, and I'm hoping for some
       input about what you want from a microframework and
       how it should look like.  Consider the API to slightly
       improve over time.
 
-    ~ What do I need?
+    ~ 我需要些什么?
 
       Jinja 2.4 and Werkzeug 0.6.1.  `easy_install` will
       install them for you if you do `easy_install Flask==dev`.
       I encourage you to use a virtualenv.  Check the docs for
       complete installation and usage instructions.
 
-    ~ Where are the docs?
+    ~ 文档在哪里?
 
       Go to http://flask.pocoo.org/ for a prebuilt version of
       the current documentation.  Otherwise build them yourself
       from the sphinx sources in the docs folder.
 
-    ~ Where can I get help?
+    ~ 我在哪里可以得到帮助?
 
       Either use the #pocoo IRC channel on irc.freenode.net or
       ask on the mailinglist: http://flask.pocoo.org/mailinglist/
