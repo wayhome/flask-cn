@@ -209,26 +209,22 @@
 诉Flask我们正在处理一个request,即使我们不是，我们在一个交互式的Python
 shell下.更进一步参考 :ref:`context-locals`).
 
-Why would you want to build URLs instead of hardcoding them in your
-templates?  There are three good reasons for this:
+为什么你想要构建网址，而不是在模板里面硬编码? 这里有三个很好的理由:
 
-1. reversing is often more descriptive than hardcoding the URLs.  Also and
-   more importantly you can change URLs in one go without having to change
-   the URLs all over the place.
-2. URL building will handle escaping of special characters and unicode
-   data transparently for you, you don't have to deal with that.
-3. If your application is placed outside the URL root (so say in
-   ``/myapplication`` instead of ``/``), :func:`~flask.url_for` will
-   handle that properly for you.
+1. 反向解析比硬编码网址更具有描述性.而且当你只在一个地方更改网址，而不用
+   满世界的更改网址时，这就显得更重要了.
+2. 网址构建过程会自动的为你处理特殊字符和unicode数据转义，这些对你而已都
+   是透明的，你不必面对这一切.
+3. 如果你的应用程序位于根路径以外的地方(比如在 ``/myapplication`` 而不是
+   ``/``), :func:`~flask.url_for` 将妥善的为你处理好这些.
 
 
 HTTP 方法
 ````````````
 
-HTTP (the protocol web applications are speaking) knows different methods
-to access URLs.  By default a route only answers to `GET` requests, but
-that can be changed by providing the `methods` argument to the
-:meth:`~flask.Flask.route` decorator.  Here some examples::
+HTTP (web应用程序的会话协议) 知道访问网址的不同方法.默认情况下路由只回
+应 `GET` 请求,但是通过 :meth:`~flask.Flask.route` 装饰器提供的 `methods`
+参数你可以更改这个行为.这里有一些例子::
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -237,14 +233,11 @@ that can be changed by providing the `methods` argument to the
         else:
             show_the_login_form()
 
-If `GET` is present, `HEAD` will be added automatically for you.  You
-don't have to deal with that.  It will also make sure that `HEAD` requests
-are handled like the `HTTP RFC`_ (the document describing the HTTP
-protocol) demands, so you can completely ignore that part of the HTTP
-specification.
+如果当前是 `GET`, `HEAD` 也会自动的为你添加.你不必处理它.它确保 `HEAD` 
+请求按照 `HTTP RFC`_ (描述HTTP协议的文档) 要求的那样来处理.所以你可以
+完全的忽略这部分HTTP规范.
 
-You have no idea what an HTTP method is?  Worry not, here quick
-introduction in HTTP methods and why they matter:
+你不清楚什么是一个HTTP方法? 没关系，这里对它们做一个快速介绍:
 
 The HTTP method (also often called "the verb") tells the server what the
 clients wants to *do* with the requested page.  The following methods are
@@ -282,6 +275,11 @@ very common:
 `DELETE`
     Remove the information that the given location.
 
+`OPTIONS`
+    Provides a quick way for a requesting client to figure out which
+    methods are supported by this URL.  Starting with Flask 0.6, this
+    is implemented for you automatically.
+
 Now the interesting part is that in HTML4 and XHTML1, the only methods a
 form might submit to the server are `GET` and `POST`.  But with JavaScript
 and future HTML standards you can use other methods as well.  Furthermore
@@ -294,31 +292,27 @@ speak HTTP)
 静态文件
 ------------
 
-Dynamic web applications need static files as well.  That's usually where
-the CSS and JavaScript files are coming from.  Ideally your web server is
-configured to serve them for you, but during development Flask can do that
-as well.  Just create a folder called `static` in your package or next to
-your module and it will be available at `/static` on the application.
+动态的web应用程序也需要静态文件.这往往是CSS和JavaScript文件的来源.理想情况
+下你的web服务器配置好了为你服务它们，但在开发过程中Flask也可以为你做这些.
+只需要在你的包或者模块旁边里创建一个名为 `static` 的文件夹，它将可以通过
+ `/static` 来访问.
 
-To generate URLs to that part of the URL, use the special ``'static'`` URL
-name::
+要生成这部分的网址，使用特殊的 ``'static'`` 网址名字 ::
 
     url_for('static', filename='style.css')
 
-The file has to be stored on the filesystem as ``static/style.css``.
+这个文件将位于文件系统的 ``static/style.css`` 位置.
 
 模板渲染
 -------------------
 
-Generating HTML from within Python is not fun, and actually pretty
-cumbersome because you have to do the HTML escaping on your own to keep
-the application secure.  Because of that Flask configures the `Jinja2
-<http://jinja.pocoo.org/2/>`_ template engine for you automatically.
+从Python生成HTML不好玩也相当麻烦,因为你必须自己做HTML转义以保证应用
+程序的安全.因为这个原因，Flask自动为您配置了 `Jinja2 <http://jinja.pocoo.org/2/>`_
+模板引擎.
 
-To render a template you can use the :func:`~flask.render_template`
-method.  All you have to do is to provide the name of the template and the
-variables you want to pass to the template engine as keyword arguments.
-Here's a simple example of how to render a template::
+你可以使用 :func:`~flask.render_template` 来渲染模板.所有您需要做的
+是提供模板的名字，以及你想要作为参数传给模板引擎的变量.这里是一个如
+和渲染模板的简单例子::
 
     from flask import render_template
 
@@ -327,28 +321,28 @@ Here's a simple example of how to render a template::
     def hello(name=None):
         return render_template('hello.html', name=name)
 
-Flask will look for templates in the `templates` folder.  So if your
-application is a module, that folder is next to that module, if it's a
-pacakge it's actually inside your package:
+Flask将会在 `templates` 文件夹下查找模板.因此如果你的应用程序是一个
+模块，这个文件夹在那个模块的旁边，或者如果它实际上是一个包含在您的
+包里面的包:
 
-**Case 1**: a module::
+**案例 一**: 一个模块 ::
     
     /application.py
     /templates
         /hello.html
 
-**Case 2**: a package::
+**案例 二**: 一个包::
 
     /application
         /__init__.py
         /templates
             /hello.html
 
-For templates you can use the full power of Jinja2 templates.  Head over
-to the `Jinja2 Template Documentation
-<http://jinja.pocoo.org/2/documentation/templates>`_ for more information.
+作为模板来讲你可以充分利用Jinja2模板的威力.前往 文档的 :ref:`templating`
+章节或者 `Jinja2 模板文档 <http://jinja.pocoo.org/2/documentation/templates>`_ 
+查看更多信息.
 
-Here an example template:
+这里是一个模版的例子:
 
 .. sourcecode:: html+jinja
 
@@ -385,6 +379,13 @@ Markup(u'<strong>Hello &lt;blink&gt;hacker&lt;/blink&gt;!</strong>')
 Markup(u'&lt;blink&gt;hacker&lt;/blink&gt;')
 >>> Markup('<em>Marked up</em> &raquo; HTML').striptags()
 u'Marked up \xbb HTML'
+
+.. versionchanged:: 0.5
+
+   Autoescaping is no longer enabled for all templates.  The following
+   extensions for templates trigger autoescaping: ``.html``, ``.htm``,
+   ``.xml``, ``.xhtml``.  Templates loaded from string will have
+   autoescaping disabled.
 
 .. [#] Unsure what that :class:`~flask.g` object is? It's something you
    can store information on yourself, check the documentation of that
@@ -467,7 +468,7 @@ transmitted in a `POST` or `PUT` request) you can use the
 :attr:`~flask.request.form` attribute.  Here a full example of the two
 attributes mentioned above::
 
-    @app.route('/login', method=['POST', 'GET'])
+    @app.route('/login', methods=['POST', 'GET'])
     def login():
         error = None
         if request.method == 'POST':
@@ -503,7 +504,7 @@ For a full list of methods and attribtues on that object, head over to the
 
 Obviously you can handle uploaded files with Flask just as easy.  Just
 make sure not to forget to set the ``enctype="multipart/form-data"``
-attribtue on your HTML form, otherwise the browser will not transmit your
+attribute on your HTML form, otherwise the browser will not transmit your
 files at all.
 
 Uploaded files are stored in memory or at a temporary location on the
@@ -538,9 +539,11 @@ Werkzeug provides for you::
     @app.route('/upload', methods=['GET', 'POST'])
     def upload_file():
         if request.method == 'POST':
-            f= request.files['the_file']
+            f = request.files['the_file']
             f.save('/var/www/uploads/' + secure_filename(f.filename))
         ...
+
+For some better examples, checkout the :ref:`uploading-files` pattern.
 
 Cookies
 ```````
@@ -586,7 +589,7 @@ you want to customize the error page, you can use the
 
 Note the ``404`` after the :func:`~flask.render_template` call.  This
 tells Flask that the status code of that page should be 404 which means
-not found.  By default 200 is assumed which translats to: all went well.
+not found.  By default 200 is assumed which translates to: all went well.
 
 .. _sessions:
 
@@ -596,14 +599,16 @@ not found.  By default 200 is assumed which translats to: all went well.
 Besides the request object there is also a second object called
 :class:`~flask.session` that allows you to store information specific to a
 user from one request to the next.  This is implemented on top of cookies
-for you and signes the cookies cryptographically.  What this means is that
+for you and signs the cookies cryptographically.  What this means is that
 the user could look at the contents of your cookie but not modify it,
 unless he knows the secret key used for signing.
 
 In order to use sessions you have to set a secret key.  Here is how
 sessions work::
 
-    from flask import session, redirect, url_for, escape
+    from flask import Flask, session, redirect, url_for, escape, request
+    
+    app = Flask(__name__)
 
     @app.route('/')
     def index():
@@ -627,12 +632,26 @@ sessions work::
     def logout():
         # remove the username from the session if its there
         session.pop('username', None)
+        return redirect(url_for('index'))
 
     # set the secret key.  keep this really secret:
-    app.secret_key = 'the secret key'
+    app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 The here mentioned :func:`~flask.escape` does escaping for you if you are
 not using the template engine (like in this example).
+
+.. admonition:: How to generate good Secret Keys
+
+   The problem with random is that it's hard to judge what random is.  And
+   a secret key should be as random as possible.  Your operating system
+   has ways to generate pretty random stuff based on a cryptographic
+   random generator which can be used to get such a key:
+
+   >>> import os
+   >>> os.urandom(24)
+   '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+
+   Just take that thing and copy/paste it into your code and you're done.
 
 消息闪烁
 ----------------
@@ -649,3 +668,40 @@ To flash a message use the :func:`~flask.flash` method, to get hold of the
 messages you can use :func:`~flask.get_flashed_messages` which is also
 available in the templates.  Check out the :ref:`message-flashing-pattern`
 for a full example.
+
+日志记录
+----------
+
+.. versionadded:: 0.3
+
+Sometimes you might be in the situation where you deal with data that
+should be correct, but actually is not.  For example you have some client
+side code that sends an HTTP request to the server, and it's obviously
+malformed.  This might be caused by a user tempering with the data, or the
+client code failed.  Most the time, it's okay to reply with ``400 Bad
+Request`` in that situation, but other times it is not and the code has to
+continue working.
+
+Yet you want to log that something fishy happened.  This is where loggers
+come in handy.  As of Flask 0.3 a logger is preconfigured for you to use.
+
+Here are some example log calls::
+
+    app.logger.debug('A value for debugging')
+    app.logger.warning('A warning occurred (%d apples)', 42)
+    app.logger.error('An error occurred')
+
+The attached :attr:`~flask.Flask.logger` is a standard logging
+:class:`~logging.Logger`, so head over to the official stdlib
+documentation for more information.
+
+WSGI 中间件集成
+---------------------------
+
+If you want to add a WSGI middleware to your application you can wrap the
+internal WSGI application.  For example if you want to use one of the
+middlewares from the Werkzeug package to work around bugs in lighttpd, you
+can do it like this::
+
+    from werkzeug.contrib.fixers import LighttpdCGIRootFix
+    app.wsgi_app = LighttpdCGIRootFix(app.wsgi_app)
