@@ -21,6 +21,29 @@ Release date to be announced, codename to be decided.
   as `config`.
 - context processors will no longer override values passed directly
   to the render function.
+- added the ability to limit the incoming request data with the
+  new ``MAX_CONTENT_LENGTH`` configuration value.
+- the endpoint for the :meth:`flask.Module.add_url_rule` method
+  is now optional to be consistent with the function of the
+  same name on the application object.
+- added a :func:`flask.make_response` function that simplifies
+  creating response object instances in views.
+- added signalling support based on blinker.  This feature is currently
+  optional and supposed to be used by extensions and applications.  If
+  you want to use it, make sure to have `blinker`_ installed.
+- refactored the way url adapters are created.  This process is now
+  fully customizable with the :meth:`~flask.Flask.create_url_adapter`
+  method.
+
+.. _blinker: http://pypi.python.org/pypi/blinker
+
+Version 0.5.2
+-------------
+
+Bugfix Release, released on July 15th 2010
+
+- fixed another issue with loading templates from directories when
+  modules were used.
 
 Version 0.5.1
 -------------

@@ -15,6 +15,15 @@ Application Object
 
 .. autoclass:: Flask
    :members:
+   :inherited-members:
+
+
+Module Objects
+--------------
+
+.. autoclass:: Module
+   :members:
+   :inherited-members:
 
 Incoming Request Data
 ---------------------
@@ -60,7 +69,7 @@ Incoming Request Data
       the data is stored unmodified in this stream for consumption.  Most
       of the time it is a better idea to use :attr:`data` which will give
       you that data as a string.  The stream only returns the data once.
-      
+
    .. attribute:: data
 
       Contains the incoming request data as string in case it came with
@@ -104,8 +113,8 @@ Incoming Request Data
       ============= ======================================================
       `path`        ``/page.html``
       `script_root` ``/myapplication``
-      `url`         ``http://www.example.com/myapplication/page.html``
-      `base_url`    ``http://www.example.com/myapplication/page.html?x=y``
+      `base_url`    ``http://www.example.com/myapplication/page.html``
+      `url`         ``http://www.example.com/myapplication/page.html?x=y``
       `url_root`    ``http://www.example.com/myapplication/``
       ============= ======================================================
 
@@ -201,6 +210,12 @@ thing, like it does for :class:`request` and :class:`session`.
 Useful Functions and Classes
 ----------------------------
 
+.. data:: current_app
+
+   Points to the application handling the request.  This is useful for
+   extensions that want to support multiple applications running side
+   by side.
+
 .. autofunction:: url_for
 
 .. function:: abort(code)
@@ -212,6 +227,12 @@ Useful Functions and Classes
    :param code: the HTTP error code.
 
 .. autofunction:: redirect
+
+.. autofunction:: make_response
+
+.. autofunction:: send_file
+
+.. autofunction:: send_from_directory
 
 .. autofunction:: escape
 
@@ -267,3 +288,119 @@ Template Rendering
 .. autofunction:: render_template_string
 
 .. autofunction:: get_template_attribute
+
+Configuration
+-------------
+
+.. autoclass:: Config
+   :members:
+
+Useful Internals
+----------------
+
+.. data:: _request_ctx_stack
+
+   The internal :class:`~werkzeug.LocalStack` that is used to implement
+   all the context local objects used in Flask.  This is a documented
+   instance and can be used by extensions and application code but the
+   use is discouraged in general.
+
+   The following attributes are always present on each layer of the
+   stack:
+
+   `app`
+      the active Flask application.
+
+   `url_adapter`
+      the URL adapter that was used to match the request.
+
+   `request`
+      the current request object.
+
+   `session`
+      the active session object.
+
+   `g`
+      an object with all the attributes of the :data:`flask.g` object.
+
+   `flashes`
+      an internal cache for the flashed messages.
+
+   Example usage::
+
+      from flask import _request_ctx_stack
+
+      def get_session():
+          ctx = _request_ctx_stack.top
+          if ctx is not None:
+              return ctx.session
+
+   .. versionchanged:: 0.4
+
+   The request context is automatically popped at the end of the request
+   for you.  In debug mode the request context is kept around if
+   exceptions happen so that interactive debuggers have a chance to
+   introspect the data.  With 0.4 this can also be forced for requests
+   that did not fail and outside of `DEBUG` mode.  By setting
+   ``'flask._preserve_context'`` to `True` on the WSGI environment the
+   context will not pop itself at the end of the request.  This is used by
+   the :meth:`~flask.Flask.test_client` for example to implement the
+   deferred cleanup functionality.
+
+   You might find this helpful for unittests where you need the
+   information from the context local around for a little longer.  Make
+   sure to properly :meth:`~werkzeug.LocalStack.pop` the stack yourself in
+   that situation, otherwise your unittests will leak memory.
+
+Signals
+-------
+
+.. when modifying this list, also update the one in signals.rst
+
+.. versionadded:: 0.6
+
+.. data:: signals_available
+
+   `True` if the signalling system is available.  This is the case
+   when `blinker`_ is installed.
+
+.. data:: template_rendered
+
+   This signal is sent when a template was successfully rendered.  The
+   signal is invoked with the instance of the template as `template`
+   and the context as dictionary (named `context`).
+
+.. data:: request_started
+
+   This signal is sent before any request processing started but when the
+   request context was set up.  Because the request context is already
+   bound, the subscriber can access the request with the standard global
+   proxies such as :class:`~flask.request`.
+
+.. data:: request_finished
+
+   This signal is sent right before the response is sent to the client.
+   It is passed the response to be sent named `response`.
+
+.. data:: got_request_exception
+
+   This signal is sent when an exception happens during request processing.
+   It is sent *before* the standard exception handling kicks in and even
+   in debug mode, where no exception handling happens.  The exception
+   itself is passed to the subscriber as `exception`.
+
+.. class:: flask.signals.Namespace
+
+   An alias for :class:`blinker.base.Namespace` if blinker is available,
+   otherwise a dummy class that creates fake signals.  This class is
+   available for Flask extensions that want to provide the same fallback
+   system as Flask itself.
+
+   .. method:: signal(name, doc=None)
+
+      Creates a new signal for this namespace if blinker is available,
+      otherwise returns a fake signal that has a send method that will
+      do nothing but will fail with a :exc:`RuntimeError` for all other
+      operations, including connecting.
+
+.. _blinker: http://pypi.python.org/pypi/blinker

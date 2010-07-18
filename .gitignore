@@ -5,3 +5,5 @@ env
 dist
 *.egg-info
 _mailinglist
+.bak
+Makefile

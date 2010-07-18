@@ -8,6 +8,14 @@ a FastCGI server first.
 The most popular one is `flup`_ which we will use for this guide.  Make
 sure to have it installed.
 
+.. admonition:: Watch Out
+
+   Please make sure in advance that your ``app.run()`` call you might
+   have in your application file, is inside an ``if __name__ ==
+   '__main__':`` or moved to a separate file.  Just make sure it's not
+   called because this will always start a local WSGI server which we do
+   not want if we deploy that application to FastCGI.
+
 Creating a `.fcgi` file
 -----------------------
 
@@ -35,7 +43,9 @@ It makes sense to have that in `/var/www/yourapplication` or something
 similar.
 
 Make sure to set the executable bit on that file so that the servers
-can execute it::
+can execute it:
+
+.. sourcecode:: text
 
     # chmod +x /var/www/yourapplication/yourapplication.fcgi
 
@@ -63,26 +73,27 @@ root.
 Configuring nginx
 -----------------
 
-Installing FastCGI applications on nginx is a bit tricky because by default
-some FastCGI parameters are not properly forwarded.
+Installing FastCGI applications on nginx is a bit different because by default
+no FastCGI parameters are forwarded.
 
-A basic FastCGI configuration for nginx looks like this::
+A basic flask FastCGI configuration for nginx looks like this::
 
-    location /yourapplication/ {
+    location = /yourapplication { rewrite ^ /yourapplication/ last; }
+    location /yourapplication { try_files $uri @yourapplication; }
+    location @yourapplication {
         include fastcgi_params;
-        if ($uri ~ ^/yourapplication/(.*)?) {
-            set $path_url $1;
-        }
-        fastcgi_param PATH_INFO $path_url;
-        fastcgi_param SCRIPT_NAME /yourapplication;
+	fastcgi_split_path_info ^(/yourapplication)(.*)$;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
         fastcgi_pass unix:/tmp/yourapplication-fcgi.sock;
     }
 
 This configuration binds the application to `/yourapplication`.  If you want
-to have it in the URL root it's a bit easier because you don't have to figure
+to have it in the URL root it's a bit simpler because you don't have to figure
 out how to calculate `PATH_INFO` and `SCRIPT_NAME`::
 
-    location /yourapplication/ {
+    location / { try_files $uri @yourapplication; }
+    location @yourapplication {
         include fastcgi_params;
         fastcgi_param PATH_INFO $fastcgi_script_name;
         fastcgi_param SCRIPT_NAME "";

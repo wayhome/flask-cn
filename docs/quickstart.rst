@@ -39,9 +39,9 @@
    WSGI程序.
 2. 接下来我实们来例化这个类.我们把模块/包的名字传给它,这样Flask就会知道它
    将要到哪里寻找模板，静态文件之类的东西.
-3. 然后我们使用 :meth:`~flask.Flask.route` 装饰器告诉Flask哪个URL将会触发
+3. 然后我们使用 :meth:`~flask.Flask.route` 装饰器告诉Flask哪个网址将会触发
    我们的函数.
-4. 这个函数还有一个作用是为特定的函数生成URLS，并返回我们想要显示在用户浏
+4. 这个函数还有一个作用是为特定的函数生成网址，并返回我们想要显示在用户浏
    览器的信息.
 5. 最后我们用 :meth:`~flask.Flask.run` 函数来运行本地服务器以及我们的应用.
    ``if __name__ == '__main__':`` 确保了服务器只会在直接用Python解释器执行
@@ -87,13 +87,12 @@
 
 .. admonition:: 注意事项
 
-   The interactive debugger however does not work in forking environments
-   which makes it nearly impossible to use on production servers but the
-   debugger still allows the execution of arbitrary code which makes it a
-   major security risk and **must never be used on production machines**
-   because of that.
+   交互调试器不能在forking环境下工作，因此很少有可能将它用于产品服务器.
+   并且调试器仍然可以执行任意的代码，这是一个重大的安全风险，因此 **绝
+   不能用于生产机器** .
+   
 
-Screenshot of the debugger in action:
+运行中的调试器的截图:
 
 .. image:: _static/debugger.png
    :align: center
@@ -104,11 +103,10 @@ Screenshot of the debugger in action:
 路由
 -------
 
-As you have seen above, the :meth:`~flask.Flask.route` decorator is used
-to bind a function to a URL.  But there is more to it!  You can make
-certain parts of the URL dynamic and attach multiple rules to a function.
+正如你看到的，:meth:`~flask.Flask.route` 装饰器用于绑定一个函数到一个网址.
+但是它不仅仅只有这些!你可以构造动态的网址并给函数附加多个规则.
 
-Here some examples::
+这里是一些例子 ::
 
     @app.route('/')
     def index():
@@ -122,16 +120,14 @@ Here some examples::
 变量规则
 ``````````````
 
-Modern web applications have beautiful URLs.  This helps people remember
-the URLs which is especially handy for applications that are used from
-mobile devices with slower network connections.  If the user can directly
-go to the desired page without having to hit the index page it is more
-likely he will like the page and come back next time.
+现代的web应用程序有着一些漂亮的网址.这有助于用户记住网址，尤其是对于那些
+来自较慢的网络连接的移动设备的用户显的很贴心.如果用户能直接访问他所想要
+的页面，而不必每次都从首页找起，那么用户可能会更喜欢这个网页，下次更愿意
+回来.
 
-To add variable parts to a URL you can mark these special sections as
-``<variable_name>``.  Such a part is then passed as keyword argument to
-your function.  Optionally a converter can be specifed by specifying a
-rule with ``<converter:variable_name>``.  Here some nice examples::
+要向URL中添加变量部分，你可以标记这些特殊的字段为 ``<variable_name>``.
+然后这个部分就可以作为参数传给你的函数.rule可以指定一个可选的转换器
+像这样 ``<converter:variable_name>``.这里有一些例子::
 
     @app.route('/user/<username>')
     def show_user_profile(username):
@@ -143,22 +139,49 @@ rule with ``<converter:variable_name>``.  Here some nice examples::
         # show the post with the given id, the id is an integer
         pass
 
-The following converters exist:
+目前有以下转换器存在:
 
 =========== ===========================================
-`int`       accepts integers
-`float`     like `int` but for floating point values
-`path`      like the default but also accepts slashes
+`int`       接受整数
+`float`     接受浮点数类型
+`path`      和默认的行为类似，但也接受斜线
 =========== ===========================================
+
+.. admonition:: 唯一的网址 / 重定向行为
+
+   Flask的网址规则是基于Werkzeug的routing模块.这个模块背后的思想是确保
+   好看以及唯一的网址，基于Apache和一些创建较早的服务器.
+
+   以如下两个规则为例 ::
+
+        @app.route('/projects/')
+        def projects():
+            pass
+
+        @app.route('/about')
+        def about():
+            pass
+
+   他们看起来相似，不同在于网址 *定义* 中结尾的斜线.第一种情况是规范网址
+   `projects` 端点有一个斜线. 从这种意义上讲，和文件夹有些类似.访问没有
+   斜线的网址会被Flask重定向到带有斜线的规范网址去.
+
+   然而在第二种情况下的网址的定义没有斜线，这种行为类似于访问一个文件，
+   访问一个带斜线的网址将会是一个404错误.
+
+   为什么这样做?用户访问网页的时候可能会忘记了斜线，这样可以使得相关的网
+   址能继续工作.这种行为和Apache以及其它服务器工作方式类似.另外网址保持唯
+   一有助于搜索引擎不会索引同一页面两次.
+
+.. _url-building:
 
 构建URL
 ````````````
 
-If it can match URLs, can it also generate them?  Of course you can.  To
-build a URL to a specific function you can use the :func:`~flask.url_for`
-function.  It accepts the name of the function as first argument and a
-number of keyword arguments, each corresponding to the variable part of
-the URL rule.  Here some examples:
+如果它能匹配网址，那么从它是否能生成网址呢? 你当然可以! 为一个特定的函数
+构建网址，你可以使用 :func:`~flask.url_for` 函数.它接受函数名作为第一个
+参数，还有一些关键字参数，每个对应于网址规则中的一个变量部分.未知的变量
+部分将附加到网址后面作为查询参数，这里有一些例子:
 
 >>> from flask import Flask, url_for
 >>> app = Flask(__name__)
@@ -174,16 +197,17 @@ the URL rule.  Here some examples:
 >>> with app.test_request_context():
 ...  print url_for('index')
 ...  print url_for('login')
+...  print url_for('login', next='/')
 ...  print url_for('profile', username='John Doe')
 ... 
 /
 /login
+/login?next=/
 /user/John%20Doe
 
-(This also uses the :meth:`~flask.Flask.test_request_context` method
-explained below.  It basically tells flask to think we are handling a
-request even though we are not, we are in an interactive Python shell.
-Have a look at the explanation below. :ref:`context-locals`).
+(这里用到了 :meth:`~flask.Flask.test_request_context` 函数,它主要是告
+诉Flask我们正在处理一个request,即使我们不是，我们在一个交互式的Python
+shell下.更进一步参考 :ref:`context-locals`).
 
 Why would you want to build URLs instead of hardcoding them in your
 templates?  There are three good reasons for this:

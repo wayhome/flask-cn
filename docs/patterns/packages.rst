@@ -17,6 +17,9 @@ this::
             login.html
             ...
 
+Simple Packages
+---------------
+
 To convert that into a larger one, just create a new folder
 `yourapplication` inside the existing one and move everything below it.
 Then rename `yourapplication.py` to `__init__.py`.  (Make sure to delete
@@ -56,7 +59,7 @@ following quick checklist:
    Not the object itself, but the module it is in.  Do the importing at
    the *bottom* of the file.
 
-Here an example `__init__.py`::
+Here's an example `__init__.py`::
 
     from flask import Flask
     app = Flask(__name__)
@@ -71,6 +74,20 @@ And this is what `views.py` would look like::
     def index():
         return 'Hello World!'
 
+You should then end up with something like that::
+
+    /yourapplication
+        /yourapplication
+            /__init__.py
+            /views.py
+            /static
+                /style.css
+            /templates
+                layout.html
+                index.html
+                login.html
+                ...
+
 .. admonition:: Circular Imports
 
    Every Python programmer hates them, and yet we just added some:
@@ -84,3 +101,165 @@ And this is what `views.py` would look like::
    There are still some problems with that approach but if you want to use
    decorators there is no way around that.  Check out the
    :ref:`becomingbig` section for some inspiration how to deal with that.
+
+
+.. _working-with-modules:
+
+Working with Modules
+--------------------
+
+For larger applications with more than a dozen views it makes sense to
+split the views into modules.  First let's look at the typical structure of
+such an application::
+
+    /yourapplication
+        /yourapplication
+            /__init__.py
+            /views
+                __init__.py
+                admin.py
+                frontend.py
+            /static
+                /style.css
+            /templates
+                layout.html
+                index.html
+                login.html
+                ...
+
+The views are stored in the `yourapplication.views` package.  Just make
+sure to place an empty `__init__.py` file in there.  Let's start with the
+`admin.py` file in the view package.
+
+First we have to create a :class:`~flask.Module` object with the name of
+the package.  This works very similar to the :class:`~flask.Flask` object
+you have already worked with, it just does not support all of the methods,
+but most of them are the same.
+
+Long story short, here's a nice and concise example::
+
+    from flask import Module
+
+    admin = Module(__name__)
+
+    @admin.route('/')
+    def index():
+        pass
+
+    @admin.route('/login')
+    def login():
+        pass
+
+    @admin.route('/logout')
+    def logout():
+        pass
+
+Do the same with the `frontend.py` and then make sure to register the
+modules in the application (`__init__.py`) like this::
+
+    from flask import Flask
+    from yourapplication.views.admin import admin
+    from yourapplication.views.frontend import frontend
+
+    app = Flask(__name__)
+    app.register_module(admin)
+    app.register_module(frontend)
+
+So what is different when working with modules?  It mainly affects URL
+generation.  Remember the :func:`~flask.url_for` function?  When not
+working with modules it accepts the name of the function as first
+argument.  This first argument is called the "endpoint".  When you are
+working with modules you can use the name of the function like you did
+without, when generating modules from a function or template in the same
+module.  If you want to generate the URL to another module, prefix it with
+the name of the module and a dot.
+
+Confused?  Let's clear that up with some examples.  Imagine you have a
+method in one module (say `admin`) and you want to redirect to a
+different module (say `frontend`).  This would look like this::
+
+    @admin.route('/to_frontend')
+    def to_frontend():
+        return redirect(url_for('frontend.index'))
+
+    @frontend.route('/')
+    def index():
+        return "I'm the frontend index"
+
+Now let's say we only want to redirect to a different function in the same
+module.  Then we can either use the full qualified endpoint name like we
+did in the example above, or we just use the function name::
+
+    @frontend.route('/to_index')
+    def to_index():
+        return redirect(url_for('index'))
+
+    @frontend.route('/')
+    def index():
+        return "I'm the index"
+
+.. _modules-and-resources:
+
+Modules and Resources
+---------------------
+
+.. versionadded:: 0.5
+
+If a module is located inside an actual Python package it may contain
+static files and templates.  Imagine you have an application like this::
+
+
+    /yourapplication
+        __init__.py
+        /apps
+            /frontend
+                __init__.py
+                views.py
+                /static
+                    style.css
+                /templates
+                    index.html
+                    about.html
+                    ...
+            /admin
+                __init__.py
+                views.py
+                /static
+                    style.css
+                /templates
+                    list_items.html
+                    show_item.html
+                    ...
+
+The static folders automatically become exposed as URLs.  For example if
+the `admin` module is exported with an URL prefix of ``/admin`` you can
+access the style css from its static folder by going to
+``/admin/static/style.css``.  The URL endpoint for the static files of the
+admin would be ``'admin.static'``, similar to how you refer to the regular
+static folder of the whole application as ``'static'``.
+
+If you want to refer to the templates you just have to prefix it with the
+name of the module.  So for the admin it would be
+``render_template('admin/list_items.html')`` and so on.  It is not
+possible to refer to templates without the prefixed module name.  This is
+explicit unlike URL rules.
+
+.. admonition:: References to Static Folders
+
+   Please keep in mind that if you are using unqualified endpoints by
+   default Flask will always assume the module's static folder, even if
+   there is no such folder.
+
+   If you want to refer to the application's static folder, use a leading
+   dot::
+
+       # this refers to the application's static folder
+       url_for('.static', filename='static.css')
+
+       # this refers to the current module's static folder
+       url_for('static', filename='static.css')
+
+   This is the case for all endpoints, not just static folders, but for
+   static folders it's more common that you will stumble upon this because
+   most applications will have a static folder in the application and not
+   a specific module.
