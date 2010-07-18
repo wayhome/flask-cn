@@ -354,23 +354,20 @@ Flask将会在 `templates` 文件夹下查找模板.因此如果你的应用程�
       <h1>Hello World!</h1>
     {% endif %}
 
-Inside templates you also have access to the :class:`~flask.request`,
-:class:`~flask.session` and :class:`~flask.g` [#]_ objects
-as well as the :func:`~flask.get_flashed_messages` function.
+在模板内部你可以访问 :class:`~flask.request`, :class:`~flask.session`
+和 :class:`~flask.g` [#]_ 对象,以及 :func:`~flask.get_flashed_messages`
+函数.
 
-Templates are especially useful if inheritance is used.  If you want to
-know how that works, head over to the :ref:`template-inheritance` pattern
-documentation.  Basically template inheritance makes it possible to keep
-certain elements on each page (like header, navigation and footer).
+当使用继承的时候模板显得特别有用.如果你想了解继承是如何工作的，请查看
+:ref:`template-inheritance` 模式文档.基本上模板继承可以使得特定元素在
+每个页面上都显示(比如header,navigation和footer).
 
-Automatic escaping is enabled, so if name contains HTML it will be escaped
-automatically.  If you can trust a variable and you know that it will be
-safe HTML (because for example it came from a module that converts wiki
-markup to HTML) you can mark it as safe by using the
-:class:`~jinja2.Markup` class or by using the ``|safe`` filter in the
-template.  Head over to the Jinja 2 documentation for more examples.
+自动转义默认是开启的，所以如果名字中包含HTML将被自动转义.如果你信任一个
+变量并知道它是安全的(例如来自于一个把wiki标记转换为HTML格式的模板),你可以
+使用类 :class:`~jinja2.Markup` 或者 模板中的 ``|safe`` 标签，来标记它是
+安全的. 前往Jinja2文档查看更多的例子.
 
-Here a basic introduction in how the :class:`~jinja2.Markup` class works:
+这里就 :class:`~jinja2.Markup` 类如何工作有一个简单的介绍:
 
 >>> from flask import Markup
 >>> Markup('<strong>Hello %s!</strong>') % '<blink>hacker</blink>'
@@ -382,25 +379,21 @@ u'Marked up \xbb HTML'
 
 .. versionchanged:: 0.5
 
-   Autoescaping is no longer enabled for all templates.  The following
-   extensions for templates trigger autoescaping: ``.html``, ``.htm``,
-   ``.xml``, ``.xhtml``.  Templates loaded from string will have
-   autoescaping disabled.
+   自动转义不再为所有的模板开启.如下扩展名的模板会触发自动转义: ``.html``,
+   ``.htm``,``.xml``, ``.xhtml``.从字符串加载的模板将禁用自动转义.
 
-.. [#] Unsure what that :class:`~flask.g` object is? It's something you
-   can store information on yourself, check the documentation of that
-   object (:class:`~flask.g`) and the :ref:`sqlite3` for more
-   information.
+.. [#] 不确定 :class:`~flask.g` 对象是什么? 它就是你可以用来存储信息的
+   某个东西,查看对象 (:class:`~flask.g`) 和 :ref:`sqlite3` 的文档以得到
+   更多信息.
 
 
 访问 Request 数据
 ----------------------
 
-For web applications it's crucial to react to the data a client sent to
-the server.  In Flask this information is provided by the global
-:class:`~flask.request` object.  If you have some experience with Python
-you might be wondering how that object can be global and how Flask
-manages to still be threadsafe.  The answer are context locals:
+对web应用程序来说最重要的就是对客户端发送到服务器端的数据做出响应.在
+Flask中这个信息由一个全局的 :class:`~flask.request` 对象提供.如果你
+有一些Python的经验，你可能会奇怪这个对象怎么可能是全局的，并且Flask
+怎么还能依然线程安全. 答案是局部上下文.
 
 
 .. _context-locals:
