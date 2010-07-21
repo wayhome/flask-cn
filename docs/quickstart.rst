@@ -401,33 +401,27 @@ Flask中这个信息由一个全局的 :class:`~flask.request` 对象提供.如�
 局部上下文
 ``````````````
 
-.. admonition:: Insider Information
+.. admonition:: 内幕信息
 
-   If you want to understand how that works and how you can implement
-   tests with context locals, read this section, otherwise just skip it.
+   如果你想理解它是怎么工作的，你怎么用它来做测试,那么继续读下去,
+   否则跳过这节.
 
-Certain objects in Flask are global objects, but not just a standard
-global object, but actually a proxy to an object that is local to a
-specific context.  What a mouthful.  But that is actually quite easy to
-understand.
+Flask中的某些对象是全局对象,但它不是一个标准的全局对象，实际上是一个
+本地对象的代理.听起来真拗口.但实际上却很容易理解.
 
-Imagine the context being the handling thread.  A request comes in and the
-webserver decides to spawn a new thread (or something else, the
-underlying object is capable of dealing with other concurrency systems
-than threads as well).  When Flask starts its internal request handling it
-figures out that the current thread is the active context and binds the
-current application and the WSGI environments to that context (thread).
-It does that in an intelligent way that one application can invoke another
-application without breaking.
 
-So what does this mean to you?  Basically you can completely ignore that
-this is the case unless you are unittesting or something different.  You
-will notice that code that depends on a request object will suddenly break
-because there is no request object.  The solution is creating a request
-object yourself and binding it to the context.  The easiest solution for
-unittesting is by using the :meth:`~flask.Flask.test_request_context`
-context manager.  In combination with the `with` statement it will bind a
-test request so that you can interact with it.  Here an example::
+想象一下正在处理线程的上下文.当一个请求进来，web服务器决定生成一个新的
+线程或别的东西时，这个基本对象能够很好的胜任处理其它并发系统不仅仅是线
+程.当Flask开始内部的线程处理时，它把当前线程当作活动上下文并把当前应用
+程序和WSGI环境绑定到这个上下文(线程).它以一种智能的方式使得在一个应用程序
+中能调用另一个应用程序而不会中断.
+
+那么这对你而言意味着什么?除非你在做单元测试或一些不同的东西，基本上你可
+以完全忽略这种情况.你将发现依赖于一个request对象的代码会突然挂掉，因为
+那里并没有request对象.解决方案就是创建一个request对象并把它绑定到上下文.
+在单元测试中最早的解决方案是使用 :meth:`~flask.Flask.test_request_context`
+上下文管理器.结合 `with` 声明它将绑定一个测试request，以便于你交互.这里
+是一个例子::
 
     from flask import request
 
@@ -437,8 +431,8 @@ test request so that you can interact with it.  Here an example::
         assert request.path == '/hello'
         assert request.method == 'POST'
 
-The other possibility is passing a whole WSGI environment to the
-:meth:`~flask.Flask.request_context` method::
+另一个可能性是传递一个完整的WSGI环境给:meth:`~flask.Flask.request_context` 
+方法::
 
     from flask import request
 
@@ -448,18 +442,16 @@ The other possibility is passing a whole WSGI environment to the
 Request 对象
 ``````````````````
 
-The request object is documented in the API section and we will not cover
-it here in detail (see :class:`~flask.request`), but just mention some of
-the most common operations.  First of all you have to import it from the
-the `flask` module::
+在API章节对request有着详尽的文档描述，所以我们这里不会深入讲解
+(查看 :class:`~flask.request`).这里仅仅提一下一些最常见的操作.
+首先你要做的是从 `flask` 导入它::
 
     from flask import request
 
-The current request method is available by using the
-:attr:`~flask.request.method` attribute.  To access form data (data
-transmitted in a `POST` or `PUT` request) you can use the
-:attr:`~flask.request.form` attribute.  Here a full example of the two
-attributes mentioned above::
+当前的request方法可以通过 :attr:`~flask.request.method` 属性获得.
+要访问表单数据(由 `POST` 或者 `PUT` 请求传递的数据),可以通过
+:attr:`~flask.request.form` 属性得到.这里有一个关于上诉提到的
+两个属性的完整的例子::
 
     @app.route('/login', methods=['POST', 'GET'])
     def login():

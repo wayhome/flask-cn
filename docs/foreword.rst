@@ -23,15 +23,29 @@ applications because changes on these thread-local objects can happen
 anywhere in the same thread.
 
 Flask provides some tools to deal with the downsides of this approach but
-it might be an issue for larger applications.  Flask is also based on
-convention over configuration, which means that many things are
-preconfigured and will work well for smaller applications but not so well
-for larger ones.  For example, by convention, templates and static files
-are in subdirectories within the Python source tree of the application.
+it might be an issue for larger applications because in theory
+modifications on these objects might happen anywhere in the same thread.
+
+Flask is also based on convention over configuration, which means that
+many things are preconfigured.  For example, by convention, templates and
+static files are in subdirectories within the Python source tree of the
+application.
+
+The main reason however why Flask is called a "microframework" is the idea
+to keep the core simple but extensible.  There is database abstraction
+layer, no form validation or anything else where different libraries
+already exist that can handle that.  However Flask knows the concept of
+extensions that can add this functionality into your application as if it
+was implemented in Flask itself.  There are currently extensions for
+object relational mappers, form validation, upload handling, various open
+authentication technologies and more.
 
 However Flask is not much code and built in a very solid foundation and
 with that very easy to adapt for large applications.  If you are
 interested in that, check out the :ref:`becomingbig` chapter.
+
+If you are curious about the Flask design principles, head over to the
+section about :ref:`design`.
 
 A Framework and an Example
 --------------------------
@@ -70,19 +84,26 @@ software, and the like.
 
 So always keep security in mind when doing web development.
 
-Target Audience
----------------
+The Status of Python 3
+----------------------
 
-Is Flask for you?  If your application is small or medium sized and does
-not depend on very complex database structures, Flask is the Framework for
-you.  It was designed from the ground up to be easy to use, and built on
-the firm foundation of established principles, good intentions, and
-mature, widely used libraries.  Recent versions of Flask scale nicely
-within reasonable bounds, and if you grow larger, you won't have any
-trouble adjusting Flask for your new application size.
+Currently the Python community is in the process of improving libraries to
+support the new iteration of the Python programming language.
+Unfortunately there are a few problems with Python 3, namely the missing
+consent on what WSGI for Python 3 should look like.  These problems are
+partially caused by changes in the language that went unreviewed for too
+long, also partially the ambitions of everyone involved to drive the WSGI
+standard forward.
 
-If you suddenly discover that your application grows larger than
-originally intended, head over to the :ref:`becomingbig` section to see
-some possible solutions for larger applications.
+Because of that we strongly recommend against using Python 3 for web
+development of any kind and wait until the WSGI situation is resolved.
+You will find a couple of frameworks and web libraries on PyPI that claim
+Python 3 support, but this support is based on the broken WSGI
+implementation provided by Python 3.0 and 3.1 which will most likely
+change in the near future.
 
-Satisfied?  Then let's proceed with :ref:`installation`.
+Werkzeug and Flask will be ported to Python 3 as soon as a solution for
+WSGI is found, and we will provide helpful tips how to upgrade existing
+applications to Python 3.  Until then, we strongly recommend using Python
+2.6 and 2.7 with activated Python 3 warnings during development, as well
+as the unicode literals `__future__` feature.
