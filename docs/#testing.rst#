@@ -4,7 +4,7 @@ Testing Flask Applications
 ==========================
 
    **Something that is untested is broken.**
-   **没有测试的软件一定是破的**
+   
 
 Not sure where that is coming from, and it's not entirely correct, but
 also not that far from the truth.  Untested applications make it hard to
