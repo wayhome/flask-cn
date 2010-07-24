@@ -239,53 +239,40 @@ HTTP (web应用程序的会话协议) 知道访问网址的不同方法.默认�
 
 你不清楚什么是一个HTTP方法? 没关系，这里对它们做一个快速介绍:
 
-The HTTP method (also often called "the verb") tells the server what the
-clients wants to *do* with the requested page.  The following methods are
-very common:
+HTTP方法(通常也被称为"动作")告诉服务器,客户端想对请求的页面做的事情.以下
+方法很常见:
 
 `GET`
-    The Browser tells the server: just *get* me the information stored on
-    that page and send them to me.  This is probably the most common
-    method.
+    浏览器告诉服务器: 只要 *获取* 我那个页面上的信息并将他们发送给我.
+    这是最常用的方法.
 
 `HEAD`
-    The Browser tells the server: get me the information, but I am only
-    interested in the *headers*, not the content of the page.  An
-    application is supposed to handle that as if a `GET` request was
-    received but not deliver the actual contents.  In Flask you don't have
-    to deal with that at all, the underlying Werkzeug library handles that
-    for you.
+    浏览器告诉服务器:给我这个信息，但是我只对 *消息头* 感兴趣，对页面
+    内容没有兴趣.应用程序期望的行为是像 `GET` 请求那样被接收，但不传递
+    实际的内容. 在Flask中你完全不必处理它，底层的Werzeug库很好的为你
+    处理了它.
 
 `POST`
-    The browser tells the server that it wants to *post* some new
-    information to that URL and that the server must ensure the data is
-    stored and only stored once.  This is how HTML forms are usually
-    transmitting data to the server.
+    浏览器告诉服务器它想 *发布* 一些信息到那个网址，服务器需确保数据
+    被存储且只存储了一次.HTML表格通常使用这个方法提交数据到服务器.
 
 `PUT`
-    Similar to `POST` but the server might trigger the store procedure
-    multiple times by overwriting the old values more than once.  Now you
-    might be asking why this is any useful, but there are some good
-    reasons to do that.  Consider the connection is lost during
-    transmission, in that situation a system between the browser and the
-    server might sent the request safely a second time without breaking
-    things.  With `POST` that would not be possible because it must only
-    be triggered once.
+    和 `POST` 类似，但服务器可能触发了多次存储过程，多次把旧的值覆盖掉.
+    你可能会问这有什么用，当然这是有原因的.传输过程中连接可能会丢失,
+    浏览器和服务器直接可以安全的发送第二次请求，这不会破坏任何事情.
+    使用 `POST` 就可能没法做到了，因为它只被允许触发一次.
 
 `DELETE`
-    Remove the information that the given location.
+    删除给定地址的信息.
 
 `OPTIONS`
-    Provides a quick way for a requesting client to figure out which
-    methods are supported by this URL.  Starting with Flask 0.6, this
-    is implemented for you automatically.
+    为请求中的客户端提供了一个快速的方法来得到这个网址支持哪些HTTP方法.
+    从Flask 0.6开始,自动为你实现了这些.
 
-Now the interesting part is that in HTML4 and XHTML1, the only methods a
-form might submit to the server are `GET` and `POST`.  But with JavaScript
-and future HTML standards you can use other methods as well.  Furthermore
-HTTP became quite popular lately and there are more things than browsers
-that are speaking HTTP.  (Your revision control system for instance might
-speak HTTP)
+有趣的是在现在的HTML4和XHTML1中，一个表单可以提交给服务器的方法只有 `GET`
+或者 `POST`. 但是通过JavaScript和未来的HTML标准你将也可以使用其他方法.
+此外HTTP最近变得相当流行，除了浏览器外还有很多东西现在也使用了HTTP协议.
+(你的版本控制系统可能也使用了HTTP协议).
 
 .. _HTTP RFC: http://www.ietf.org/rfc/rfc2068.txt
 
@@ -531,9 +518,9 @@ Cookies
 跳转和错误
 --------------------
 
-To redirect a user to somewhere else you can use the
-:func:`~flask.redirect` function, to abort a request early with an error
-code the :func:`~flask.abort` function.  Here an example how this works::
+把一个用户跳转到某个地方去你可以使用 :func:`~flask.redirect` 函数,提前
+中断一个请求并返回错误码，你可以使用 :func:`~flask.abort` 函数.这里有
+一个它们是如何工作的例子::
 
     from flask import abort, redirect, url_for
 
@@ -546,13 +533,11 @@ code the :func:`~flask.abort` function.  Here an example how this works::
         abort(401)
         this_is_never_executed()
 
-This is a rather pointless example because a user will be redirected from
-the index to a page he cannot access (401 means access denied) but it
-shows how that works.
+这是一个相当没有意义的例子，因为用户将会从首页跳转到一个它不能访问的页面
+(401意味着禁止访问),但它展示了它们是如何工作的.
 
-By default a black and white error page is shown for each error code.  If
-you want to customize the error page, you can use the
-:meth:`~flask.Flask.errorhandler` decorator::
+默认每个错误码将会显示一个黑白错误信息的页面.如果你想定制错误页面，你可以
+使用:meth:`~flask.Flask.errorhandler` 装饰器::
 
     from flask import render_template
 
@@ -560,24 +545,20 @@ you want to customize the error page, you can use the
     def page_not_found(error):
         return render_template('page_not_found.html'), 404
 
-Note the ``404`` after the :func:`~flask.render_template` call.  This
-tells Flask that the status code of that page should be 404 which means
-not found.  By default 200 is assumed which translates to: all went well.
+注意 :func:`~flask.render_template` 调用后的 ``404`` .它告诉Flask这个页
+面的状态码是404，代表没有找到的意思.默认的状态码是200，它的意思是: 一切
+顺利.
 
 .. _sessions:
 
 会话
 --------
 
-Besides the request object there is also a second object called
-:class:`~flask.session` that allows you to store information specific to a
-user from one request to the next.  This is implemented on top of cookies
-for you and signs the cookies cryptographically.  What this means is that
-the user could look at the contents of your cookie but not modify it,
-unless he knows the secret key used for signing.
+除了request对象外，还有一个对象叫做:class:`~flask.session` 允许你在不同请求
+之间储存特定用户信息.这是在cookies基础上实现的并对cookies进行了加密.这意味
+着用户可以查看你的cookie的内容，但不能修改它.除非它知道签名的密钥.
 
-In order to use sessions you have to set a secret key.  Here is how
-sessions work::
+要使用会话你需要设置一个密钥.这是会话工作的一个例子::
 
     from flask import Flask, session, redirect, url_for, escape, request
     
@@ -610,71 +591,64 @@ sessions work::
     # set the secret key.  keep this really secret:
     app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
-The here mentioned :func:`~flask.escape` does escaping for you if you are
-not using the template engine (like in this example).
+这里提到了 :func:`~flask.escape` 函数，如果你没有使用模板引擎可以用它
+来做转义(就像这个例子).
 
-.. admonition:: How to generate good Secret Keys
+.. admonition:: 如何生成好的密钥
 
-   The problem with random is that it's hard to judge what random is.  And
-   a secret key should be as random as possible.  Your operating system
-   has ways to generate pretty random stuff based on a cryptographic
-   random generator which can be used to get such a key:
+   随机的问题是很难判断是否真正的随机.一个密钥应该做到足够随机.你的操作
+   系统可以基于密码随机生成器产生一个漂亮的随机值，可以用来做密钥:
 
    >>> import os
    >>> os.urandom(24)
    '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 
-   Just take that thing and copy/paste it into your code and you're done.
+   拿下这个东西，复制粘贴到你的代码，然后你就大功告成了.
+
 
 消息闪烁
 ----------------
 
-Good applications and user interfaces are all about feedback.  If the user
-does not get enough feedback he will probably end up hating the
-application.  Flask provides a really simple way to give feedback to a
-user with the flashing system.  The flashing system basically makes it
-possible to record a message at the end of a request and access it next
-request and only next request.  This is usually combined with a layout
-template that does this.
+良好的应用程序和用户界面都是基于反馈.如果用户得不到足够的反馈，它可能
+最终会憎恨这个应用程序.Flask提供了一个简单的方法来给用户反馈，通过它的
+消息闪烁系统.这个消息闪烁系统使得可以在一个request结束时记录一条消息,
+然后在下一个request(仅能在这个request)中访问它.通常结合模板的布局来
+做这件事.
 
-To flash a message use the :func:`~flask.flash` method, to get hold of the
-messages you can use :func:`~flask.get_flashed_messages` which is also
-available in the templates.  Check out the :ref:`message-flashing-pattern`
-for a full example.
+要闪烁一条消息使用 :func:`~flask.flash` 方法，获得消息使用 
+:func:`~flask.get_flashed_messages`,这个方法也能在模板中使用.
+查看 :ref:`message-flashing-pattern` 获得更完整的示例.
+
 
 日志记录
 ----------
 
 .. versionadded:: 0.3
 
-Sometimes you might be in the situation where you deal with data that
-should be correct, but actually is not.  For example you have some client
-side code that sends an HTTP request to the server, and it's obviously
-malformed.  This might be caused by a user tempering with the data, or the
-client code failed.  Most the time, it's okay to reply with ``400 Bad
-Request`` in that situation, but other times it is not and the code has to
-continue working.
+有时你可能会遇到一种情况，你要处理的数据应该是正确的，但实际上却不是.
+比如你有一些客户端代码发送HTTP请求到服务器，它明显变形了.这可能是因为
+用户对数据的加工，或者客户端代码故障.大多数时候，在这种情况下回复
+``400 Bad Request`` 就可以了,但在一些情况下不这么做，并且代码还得继续
+工作下去.
 
-Yet you want to log that something fishy happened.  This is where loggers
-come in handy.  As of Flask 0.3 a logger is preconfigured for you to use.
+然而你想把一些不对劲的事情记录下来.这时日志记录就派上用场了.从Flask 0.3
+开始一个日志记录器已经预先为您配置好了.
 
-Here are some example log calls::
+这里有一些日志调用的例子::
 
     app.logger.debug('A value for debugging')
     app.logger.warning('A warning occurred (%d apples)', 42)
     app.logger.error('An error occurred')
 
-The attached :attr:`~flask.Flask.logger` is a standard logging
-:class:`~logging.Logger`, so head over to the official stdlib
-documentation for more information.
+附带的 :attr:`~flask.Flask.logger` 是一个标准的日志类 :class:`~logging.Logger`,
+因此可以前往官方标准库文档查看更新信息.
 
 WSGI 中间件集成
 ---------------------------
 
-If you want to add a WSGI middleware to your application you can wrap the
-internal WSGI application.  For example if you want to use one of the
-middlewares from the Werkzeug package to work around bugs in lighttpd, you
-can do it like this::
+如果你想添加一个WSGI中间件到你的应用程序，你可以封装内部的WSGI应用.
+例如你如果享用Werkzeug包中的一个中间件来处理lighttpd的一些bug,你可以
+这样做::
 
     from werkzeug.contrib.fixers import LighttpdCGIRootFix
     app.wsgi_app = LighttpdCGIRootFix(app.wsgi_app)
