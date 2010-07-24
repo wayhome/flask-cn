@@ -88,8 +88,8 @@
 .. admonition:: 注意事项
 
    交互调试器不能在forking环境下工作，因此很少有可能将它用于产品服务器.
-   并且调试器仍然可以执行任意的代码，这是一个重大的安全风险，因此 **绝
-   不能用于生产机器** .
+   并且调试器仍然可以执行任意的代码，这是一个重大的安全风险，
+   因此 **绝不能用于生产机器** .
    
 
 运行中的调试器的截图:
@@ -295,7 +295,7 @@ speak HTTP)
 动态的web应用程序也需要静态文件.这往往是CSS和JavaScript文件的来源.理想情况
 下你的web服务器配置好了为你服务它们，但在开发过程中Flask也可以为你做这些.
 只需要在你的包或者模块旁边里创建一个名为 `static` 的文件夹，它将可以通过
- `/static` 来访问.
+`/static` 来访问.
 
 要生成这部分的网址，使用特殊的 ``'static'`` 网址名字 ::
 
@@ -465,41 +465,32 @@ Request 对象
         # this is executed if the request method was GET or the
         # credentials were invalid
 
-What happens if the key does not exist in the `form` attribute?  In that
-case a special :exc:`KeyError` is raised.  You can catch it like a
-standard :exc:`KeyError` but if you don't do that, a HTTP 400 Bad Request
-error page is shown instead.  So for many situations you don't have to
-deal with that problem.
+如果 `form` 属性中不存在这个键会发生什么?在这种情况下将会抛出 :exc:`KeyError`.
+你可以像捕捉标准错误一样捕捉它，但如果你不这样做，将会显示给你一个 HTTP 400 Bad
+Request页面.因此很多情况下你不必处理这个问题.
 
-To access parameters submitted in the URL (``?key=value``) you can use the
-:attr:`~flask.request.args` attribute::
+要访问诸如(``?key=value``)之类形式的网址所提交的参数，你可以使用 :attr:
+`~flask.request.args` 属性::
 
     searchword = request.args.get('q', '')
 
-We recommend accessing URL parameters with `get` or by catching the
-`KeyError` because users might change the URL and presenting them a 400
-bad request page in that case is a bit user unfriendly.
+我们推荐使用 `get` 访问网址参数或者捕捉 `KeyError`,因为用户可能更改网址，
+展现给他们一个 400 bad request 页面不够友好.
 
-For a full list of methods and attribtues on that object, head over to the
-:class:`~flask.request` documentation.
+如果要得到关于该对象的方法和属性的一份全面的列表，查看文档 :class:`~flask.request` .
 
 
 文件上传
 ````````````
 
-Obviously you can handle uploaded files with Flask just as easy.  Just
-make sure not to forget to set the ``enctype="multipart/form-data"``
-attribute on your HTML form, otherwise the browser will not transmit your
-files at all.
+用Flask处理文件上传很容易.你只要确保不要忘记在你的HTML表单设置属性
+``enctype="multipart/form-data"`` ，否则浏览器根本不会提交你的文件.
 
-Uploaded files are stored in memory or at a temporary location on the
-filesystem.  You can access those files by looking at the
-:attr:`~flask.request.files` attribute on the request object.  Each
-uploaded file is stored in that dictionary.  It behaves just like a
-standard Python :class:`file` object, but it also has a
-:meth:`~werkzeug.FileStorage.save` method that allows you to store that
-file on the filesystem of the server.  Here a simple example how that
-works::
+上传的文件储存在内存或者文件系统中的一个临时位置.你可以通过request
+对象的 :attr:`~flask.request.files` 属性来访问这些文件.每个上传的
+文件都储存在那个字典里.它表现的就像一个标准的Python :class:`file`
+对象,但它还有一个 :meth:`~werkzeug.FileStorage.save`  方法允许你
+把文件存储在服务器的文件系统上.这里有一个它如何工作的例子::
 
     from flask import request
 
@@ -510,13 +501,11 @@ works::
             f.save('/var/www/uploads/uploaded_file.txt')
         ...
 
-If you want to know how the file was named on the client before it was
-uploaded to your application, you can access the
-:attr:`~werkzeug.FileStorage.filename` attribute.  However please keep in
-mind that this value can be forged so never ever trust that value.  If you
-want to use the filename of the client to store the file on the server,
-pass it through the :func:`~werkzeug.secure_filename` function that
-Werkzeug provides for you::
+如果你想知道客户端把文件上传到你的应用之前时的文件命名,你可以访问
+:attr:`~werkzeug.FileStorage.filename` 属性.但请牢牢记住，这个值
+是可以伪造的，永远不要信任这个值.如果你想使用客户端的文件名把文件
+存在服务器，你可以把它传递给Werkzeug提供给你的 
+:func:`~werkzeug.secure_filename` 函数::
 
     from flask import request
     from werkzeug import secure_filename
@@ -528,16 +517,15 @@ Werkzeug provides for you::
             f.save('/var/www/uploads/' + secure_filename(f.filename))
         ...
 
-For some better examples, checkout the :ref:`uploading-files` pattern.
+更多例子请查看 :ref:`uploading-files` 模式.
 
 Cookies
 ```````
 
-To access cookies you can use the :attr:`~flask.request.cookies`
-attribute.  Again this is a dictionary with all the cookies the client
-transmits.  If you want to use sessions, do not use the cookies directly
-but instead use the :ref:`sessions` in Flask that add some security on top
-of cookies for you.
+访问cookies你可以使用 :attr:`~flask.request.cookies` 属性.这也是
+一个字典，包含了客户端传输的所有的cookies.如果你想使用会话而不想
+直接使用cookies的话请参考 :ref:`sessions` 章节,它在cookies的基础
+上增加了一些安全措施.
 
 
 跳转和错误
