@@ -1,9 +1,8 @@
 用户指南
 ------------
 
-This part of the documentation, which is mostly prose, begins with some
-background information about Flask, then focuses on step-by-step
-instructions for web development with Flask.
+这部分文档主要介绍了Flask的背景，然后对于Flask的web开发做了一个一步一
+步的要点指示.
 
 .. toctree::
    :maxdepth: 2
