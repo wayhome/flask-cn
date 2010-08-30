@@ -1,5 +1,6 @@
 Unicode in Flask
 ================
+Flask 中的Unicode
 
 Flask like Jinja2 and Werkzeug is totally unicode based when it comes to
 text.  Not only these libraries, also the majority of web related Python
@@ -9,6 +10,12 @@ Absolutely, Positively Must Know About Unicode and Character Sets
 <http://www.joelonsoftware.com/articles/Unicode.html>`_.  This part of the
 documentation just tries to cover the very basics so that you have a
 pleasant experience with unicode related things.
+
+与Jinjia2和Werkzeug一样，flask对于文本的处理也是基于unicode编码的。不只是这些库，其他的与web处理
+相关的Python库也是这样处理文本的。如果你现在还不知道unicode，那么你可能应该读一读 `The Absolute 
+Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets
+<http://www.joelonsoftware.com/articles/Unicode.html>`_.这个文档的此部分试图覆盖所有与unicode
+相关的一些知识。
 
 Automatic Conversion
 --------------------
