@@ -1,6 +1,6 @@
-.. _tutorial-setup:
+.. _例程构建:
 
-Step 2: Application Setup Code
+第二步: 应用程序构建代码
 ==============================
 
 Now that we have the schema in place we can create the application module.
