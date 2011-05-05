@@ -45,4 +45,3 @@ Flask License
 Flask Artwork License
 ---------------------
 
-.. include:: ../artwork/LICENSE

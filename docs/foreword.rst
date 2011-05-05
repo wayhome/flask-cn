@@ -1,109 +1,86 @@
-Foreword
+前言
 ========
+:译者: suxindichen@douban
 
-Read this before you get started with Flask.  This hopefully answers some
-questions about the purpose and goals of the project, and when you
-should or should not be using it.
+请在你开始Flask之前读一下这篇文章，希望它回答你一些关于这个项目的初衷和目标
+，以及何时该用此框架何时不该用。
 
-What does "micro" mean?
+
+"micro"是什么意思？
 -----------------------
 
-To me, the "micro" in microframework refers not only to the simplicity and
-small size of the framework, but also to the typically limited complexity
-and size of applications that are written with the framework.  Also the
-fact that you can have an entire application in a single Python file.  To
-be approachable and concise, a microframework sacrifices a few features
-that may be necessary in larger or more complex applications.
+对我来说,microframework 中的“micro”并不仅仅意味着框架的简单性和轻量性，还意
+味着明显的复杂度限制和用框架所写出的应用的大小。即使只用一个python文件构成
+一个应用也是事实。为了变得平易近人和简洁，一个microframwork会选择牺牲一些
+可能对于大型或者更加复杂的应用来说必不可少的功能。
 
-For example, Flask uses thread-local objects internally so that you don't
-have to pass objects around from function to function within a request in
-order to stay threadsafe.  While this is a really easy approach and saves
-you a lot of time, it might also cause some troubles for very large
-applications because changes on these thread-local objects can happen
-anywhere in the same thread.
+例如，flask使用内部的本地线程对象从而使你不用为了线程安全而在一个请求中来回
+的在方法和方法之间传递对象。虽然这是一个简单的方法并且节省了你很多的时间，
+但是它可能也会在非常大的应用中引发一些问题因为这些本地线程对象可能会在同一
+线程的任何地方发生变化。
 
-Flask provides some tools to deal with the downsides of this approach but
-it might be an issue for larger applications because in theory
-modifications on these objects might happen anywhere in the same thread.
+Flask 提供了一些工具来处理着这种方法的缺点，但是它更多的只是一种理论对于更
+大的应用来说，因为理论上本地县城对象会在同一线程的任何地方被修改。
 
-Flask is also based on convention over configuration, which means that
-many things are preconfigured.  For example, by convention, templates and
-static files are in subdirectories within the Python source tree of the
-application.
+Flask也是基于配置的，也就是说许多东西会被预先配置。比如说，按照惯例，模板和
+静态文件会在应用程序的python资源树下的子目录中。 
 
-The main reason however why Flask is called a "microframework" is the idea
-to keep the core simple but extensible.  There is database abstraction
-layer, no form validation or anything else where different libraries
-already exist that can handle that.  However Flask knows the concept of
-extensions that can add this functionality into your application as if it
-was implemented in Flask itself.  There are currently extensions for
-object relational mappers, form validation, upload handling, various open
-authentication technologies and more.
+Flask被称为”microframework”的主要原因是保持核心简单和可扩展性的理念。没有
+数据库抽象层，没有表单验证以及其他的任何已经存在的可以处理它的不同库。但是
+flask知道扩展的概念。这样你就可以在你的应用程序中添加这些功能，如果它被引用
+的话。目前已经有对象关系映射器，表单验证，上传处理，各种开放认证技术等等之类
+的扩展。 
 
-However Flask is not much code and built in a very solid foundation and
-with that very easy to adapt for large applications.  If you are
-interested in that, check out the :ref:`becomingbig` chapter.
 
-If you are curious about the Flask design principles, head over to the
-section about :ref:`design`.
+然而flask并没有许多的代码，并且它基于一个非常坚固的基础，这样它就可以非常容
+易的去适应大型的应用。如果你有兴趣，请查阅 :ref:`becomingbig`  章节。　　
 
-A Framework and an Example
+如果你对flask的设计原则感到好奇，请转向 :ref:`design` 章节。 
+
+
+一个框架和一个例子
 --------------------------
 
-Flask is not only a microframework; it is also an example.  Based on
-Flask, there will be a series of blog posts that explain how to create a
-framework.  Flask itself is just one way to implement a framework on top
-of existing libraries.  Unlike many other microframeworks, Flask does not
-try to implement everything on its own; it reuses existing code.
+Flask 并不仅仅是一个微型框架；它同时也是一个例子。基于Flask，会有一系列的博
+文来阐述如何创建一个框架。Flask自己就是一种在现有库的基础上实现一个框架的方
+式。不像大部分的其他微型框架，Flask不会试着实现它自己的任何东西，它直接使用
+已经存在的代码。
 
-Web Development is Dangerous
+
+Web开发是危险的
 ----------------------------
 
-I'm not joking.  Well, maybe a little.  If you write a web
-application, you are probably allowing users to register and leave their
-data on your server.  The users are entrusting you with data.  And even if
-you are the only user that might leave data in your application, you still
-want that data to be stored securely.
+我并不是在开玩笑。好吧，也许有一小点。如果你写一个web应用，你可能允许用户注册
+，并且允许他们在你的服务器上留下数据。用户把数据委托给了你。即使你是唯一可能
+在你的应用中留下数据的用户，你也会希望那些数据安全的存储起来。 
 
-Unfortunately, there are many ways the security of a web application can be
-compromised.  Flask protects you against one of the most common security
-problems of modern web applications: cross-site scripting (XSS).  Unless
-you deliberately mark insecure HTML as secure, Flask and the underlying
-Jinja2 template engine have you covered.  But there are many more ways to
-cause security problems.
 
-The documentation will warn you about aspects of web development that
-require attention to security.  Some of these security concerns
-are far more complex than one might think, and we all sometimes underestimate
-the likelihood that a vulnerability will be exploited, until a clever
-attacker figures out a way to exploit our applications.  And don't think
-that your application is not important enough to attract an attacker.
-Depending on the kind of attack, chances are that automated bots are
-probing for ways to fill your database with spam, links to malicious
-software, and the like.
+不幸的是，有很多中方法去损害一个Web应用程序的安全性。Flask可以防止一种现代Web
+应用中最常见的安全问题：cross-site scripting(XSS).除非你故意的把不安全的HTML 
+标记为安全的，Flask和潜在的Jinja2模板引擎会把你覆盖掉。但是引发安全问题的方式
+还有很多。 
 
-So always keep security in mind when doing web development.
+这篇文档是要提醒你注意Web开发中需要注意安全问题的方面。这些安全忧患中的一些远
+远比人所想到的复杂的多，我们有时候会低估了一个漏洞会被利用的可能性，直到一个聪
+明的攻击者指出一种方式来溢出我们的应用。 
 
-The Status of Python 3
+别以为你的应用程序还没有重要到吸引攻击者的程度， 依靠这种攻击方式，可能会有一些
+自动机器人在想方设法在你的数据库中填入垃圾邮件，恶意软件的链接，等等。 
+
+
+Python 3的状态
 ----------------------
 
-Currently the Python community is in the process of improving libraries to
-support the new iteration of the Python programming language.
-Unfortunately there are a few problems with Python 3, namely the missing
-consent on what WSGI for Python 3 should look like.  These problems are
-partially caused by changes in the language that went unreviewed for too
-long, also partially the ambitions of everyone involved to drive the WSGI
-standard forward.
+目前Python社区正处在一个提高库对Python编程语言的新的迭代过程的支持。不幸的是，
+Python3 中还有一些问题，像缺少对Python3应该采用哪种WSGI方式的决策。这些问题有
+部分原因是Python中的未经审核的变化；一部分原因是每个人都希望参与推动WSGI标准的
+野心。 
 
-Because of that we strongly recommend against using Python 3 for web
-development of any kind and wait until the WSGI situation is resolved.
-You will find a couple of frameworks and web libraries on PyPI that claim
-Python 3 support, but this support is based on the broken WSGI
-implementation provided by Python 3.0 and 3.1 which will most likely
-change in the near future.
+正因为如此，我们推荐不要使用Python3来开发任何Web应用直到WSGI的问题得到解决。
+你会发现一部分框架和Web库宣称支持 Python3，但是它们的支持是基于Python3和
+Python3.1中过时的WSGI实现，而这个实现很有可能在不久的将来会发生改变。 
 
-Werkzeug and Flask will be ported to Python 3 as soon as a solution for
-WSGI is found, and we will provide helpful tips how to upgrade existing
-applications to Python 3.  Until then, we strongly recommend using Python
-2.6 and 2.7 with activated Python 3 warnings during development, as well
-as the unicode literals `__future__` feature.
+一旦WSGI的问题得到解决，Werkzeug和Flask将会立刻移植到Python3，并且我们会
+提供一些有用的提示来把现存的应用更新到 Python3.在那之前，我们强烈推荐在
+开发过程中使用激活的Python3 警告python2.6和2.7，以及Unicode文字的 
+`__future__` 功能。 
