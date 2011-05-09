@@ -1,5 +1,5 @@
 模版
-==========
+====
 :译者: feichao#zoho.com
 
 Flask使用Jinja2作为默认模版。你可以使用任意其他的模版来替代它，但是Flask要求必须安装Jinja2。这是为了能让Flask使用更多的扩展。而这些扩展依赖于Jinja2.
@@ -7,7 +7,7 @@ Flask使用Jinja2作为默认模版。你可以使用任意其他的模版来替
 这篇文章只是简单的介绍了Jinja2是如何与Flask相互配合的。如果你想更多的了解Jinja2这个引擎本身，可以去看 `Jinja2模版的官方文档 <http://jinja.pocoo.org/2/documentation/templates>`_
 
 Jinja安装
-----------
+---------
 
 Flask默认的Jinja配置为：
 
