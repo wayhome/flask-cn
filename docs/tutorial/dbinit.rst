@@ -1,7 +1,7 @@
 .. _tutorial-dbinit:
 
-Step 3: Creating The Database
-=============================
+第三步： 创建一个数据库
+=======================
 
 Flaskr is a database powered application as outlined earlier, and more
 precisely, an application powered by a relational database system.  Such

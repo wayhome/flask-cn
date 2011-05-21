@@ -3,13 +3,11 @@
 第二步: 应用程序构建代码
 ==============================
 
-Now that we have the schema in place we can create the application module.
-Let's call it `flaskr.py` inside the `flaskr` folder.  For starters we
-will add the imports we will need as well as the config section.  For
-small applications it's a possibility to drop the configuration directly
-into the module which we will be doing here.  However a cleaner solution
-would be to create a separate `.ini` or `.py` file and load that or import
-the values from there.
+现在我们已经准备好了模式，终于可以创建应用程序的模块了。让我们把他叫做
+`flaskr.py` ，并把它放在 `flaskr` 目录下。首先，我们把需要的模块和配置
+导入。如果是小应用的话，可以直接把配置放在主模块里面，就跟我们将要做的
+一样。但是一个更加清晰的方案是创建一个独立的 `.ini` 或 `.py` 文件，然
+后导入或装载到主模块中。
 
 ::
 
@@ -25,59 +23,50 @@ the values from there.
     USERNAME = 'admin'
     PASSWORD = 'default'
 
-Next we can create our actual application and initialize it with the
-config from the same file::
+下一步我们要创建真正的应用，然后用同一个文件中的配置来初始化::
 
     # create our little application :)
     app = Flask(__name__)
     app.config.from_object(__name__)
 
-:meth:`~flask.Config.from_object` will look at the given object (if it's a
-string it will import it) and then look for all uppercase variables
-defined there.  In our case, the configuration we just wrote a few lines
-of code above.  You can also move that into a separate file.
+:meth:`~flask.Config.from_object` 会识别给出的对象（如果是一个字符串，它
+会自动导入这个模块），然后查找所有已定义的大写变量。在我们这个例子里，配置
+在几行代码前。你也可以把它移动到一个单独的文件中。
 
-It is also a good idea to be able to load a configuration from a
-configurable file.  This is what :meth:`~flask.Config.from_envvar` can
-do::
+从配置文件中读取配置也是一个好方法。:meth:`~flask.Config.from_envvar` 就是
+用来做这个事情的::
 
     app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
-That way someone can set an environment variable called
-:envvar:`FLASKR_SETTINGS` to specify a config file to be loaded which will
-then override the default values.  The silent switch just tells Flask to
-not complain if no such environment key is set.
+通过那种方法，就可以设置环境变量 :envvar:`FLASKR_SETTINGS` 来装载指定的配
+置文件，装载后会覆盖默认值。silent参数是为了告诉Flask不要报错，即使没有设置
+环境变量。
 
-The `secret_key` is needed to keep the client-side sessions secure.
-Choose that key wisely and as hard to guess and complex as possible.  The
-debug flag enables or disables the interactive debugger.  Never leave
-debug mode activated in a production system because it will allow users to
-execute code on the server!
+我们需要设置 `secret_key` 来确保客户端Session的安全。合理的设置这个值，而且
+越复杂越好。Debug标志用来指示是否开启交互debugger。永远不要在生产环境下开始
+debug标志，因为这样会允许用户在服务器上执行代码！
 
-We also add a method to easily connect to the database specified.  That
-can be used to open a connection on request and also from the interactive
-Python shell or a script.  This will come in handy later
+我们还添加了一个方法来快速的连接到指定的数据库。这个方法不仅可以在有用户请
+求时打开一个连接,还可以在交互的Python shell和脚本中使用。这对以后会很方便。
 
 ::
 
     def connect_db():
         return sqlite3.connect(app.config['DATABASE'])
 
-Finally we just add a line to the bottom of the file that fires up the
-server if we want to run that file as a standalone application::
+最后如果我们想把那个文件当做一个独立的应用来运行，我们需要在文件的末尾加
+一行代码来开启服务器 ::
 
     if __name__ == '__main__':
         app.run()
 
-With that out of the way you should be able to start up the application
-without problems.  When you head over to the server you will get an 404
-page not found error because we don't have any views yet.  But we will
-focus on that a little later.  First we should get the database working.
+现在我们应该可以顺利的运行这个应用了。如果你访问服务器，你会得到一个404，
+页面没有找到的错误，因为我们还没有创建任何视图。但是我们会在后面再提到它。
+首先，我们应该要先让数据库跑起来。
 
-.. admonition:: Externally Visible Server
+.. admonition:: 让服务器可以被外部访问
 
-   Want your server to be publically available?  Check out the
-   :ref:`externally visible server <public-server>` section for more
-   information.
+   你想然你的服务器被外部访问吗？查看 
+   :ref:`externally visible server <public-server>` 部分来获取更多的信息
 
-Continue with :ref:`tutorial-dbinit`.
+继续 :ref:`tutorial-dbinit`.
