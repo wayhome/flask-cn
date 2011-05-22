@@ -3,34 +3,28 @@
 第三步： 创建一个数据库
 =======================
 
-Flaskr is a database powered application as outlined earlier, and more
-precisely, an application powered by a relational database system.  Such
-systems need a schema that tells them how to store that information. So
-before starting the server for the first time it's important to create
-that schema.
+我们原来就说过，Flask是一个数据去驱动的应用，更准确的来说，是一个基于关系数
+据库的应用。这样的系统需要一个模式来决定怎么去存储信息。所以在第一次开启服
+务器前就把模式创建好很重要。
 
-Such a schema can be created by piping the `schema.sql` file into the
-`sqlite3` command as follows::
+这个模式可以通过管道的方式把 `schema.sql` 输入到 `sqlite3` 命令中，如下所示
+ ::
 
     sqlite3 /tmp/flaskr.db < schema.sql
 
-The downside of this is that it requires the sqlite3 command to be
-installed which is not necessarily the case on every system.  Also one has
-to provide the path to the database there which leaves some place for
-errors.  It's a good idea to add a function that initializes the database
-for you to the application.
+这种方法的缺点是需要安装sqlite3命令，但是并不是每一个系统中都有安装。而且你
+必须给出数据库的路径，否则就会出错。添加一个函数来对数据库进行初始化是一个
+不错的想法。
 
-If you want to do that, you first have to import the
-:func:`contextlib.closing` function from the contextlib package.  If you
-want to use Python 2.5 it's also necessary to enable the `with` statement
-first (`__future__` imports must be the very first import)::
+如果你想这么做，首先要从contextlib package中import 
+:func:`contextlib.closing` 函数。如果你想用Python 2.5，那么还需要开启
+`with` 声明，（从 `_future_` 中的import内容要在所以import的最前面）::
 
     from __future__ import with_statement
     from contextlib import closing
 
-Next we can create a function called `init_db` that initializes the
-database.  For this we can use the `connect_db` function we defined
-earlier.  Just add that function below the `connect_db` function::
+下面我们创建一个叫 `init_db` 的函数来初始化数据库。在这里，我们可以使用前面
+定义的 `connect_db` 函数。只需要把这个函数添加到 `connect_db` 函数的下面::
 
     def init_db():
         with closing(connect_db()) as db:
@@ -38,30 +32,26 @@ earlier.  Just add that function below the `connect_db` function::
                 db.cursor().executescript(f.read())
             db.commit()
 
-The :func:`~contextlib.closing` helper function allows us to keep a
-connection open for the duration of the `with` block.  The
-:func:`~flask.Flask.open_resource` method of the application object
-supports that functionality out of the box, so it can be used in the
-`with` block directly.  This function opens a file from the resource
-location (your `flaskr` folder) and allows you to read from it.  We are
-using this here to execute a script on the database connection.
+通过 :func: `~contextlib.closing` 辅助函数，我们可以在 `with` 模块中保持数
+据库连接。applicationg对象的 :func:`~flask.Flask.open_resource` 方法支持也
+支持这个功能，所以我们可以在 `with` 模块中直接使用它。这个函数用来从这个应
+用的所在位置（ `flaskr` 目录）打开一个文件，然后允许你通过它来读取文件。我
+们在这里使用这个函数是为了在数据库连接上执行一个脚本。
 
-When we connect to a database we get a connection object (here called
-`db`) that can give us a cursor.  On that cursor there is a method to
-execute a complete script.  Finally we only have to commit the changes.
-SQLite 3 and other transactional databases will not commit unless you
-explicitly tell it to.
+当你连接到数据库后，我们就得到了一个连接对象（这里我们把它叫做 `db` ），这
+个对象会给我们提供一个指针。这个指针有一个方法可以来执行完整的数据库命令。
+最后，我们还要来提交我们对数据库所做的改变。如果你不明确的来提交修改，
+SQLite3和其他的事务数据库都不会自动提交这些修改。
 
-Now it is possible to create a database by starting up a Python shell and
-importing and calling that function::
+现在我们可以打开一个Pythonshell，然后import函数，调用函数。这样就能创建一个
+数据库了::
 
 >>> from flaskr import init_db
 >>> init_db()
 
 .. admonition:: Troubleshooting
 
-   If you get an exception later that a table cannot be found check that
-   you did call the `init_db` function and that your table names are
-   correct (singular vs. plural for example).
+   如果你得到了一个表无法被找到的异常，检查下，你是否调用了 `init_db` ，而
+   且你表的名字是正确的（单数 复数问题）。
 
-Continue with :ref:`tutorial-dbcon`
+继续 :ref:`tutorial-dbcon`
