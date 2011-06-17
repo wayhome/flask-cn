@@ -1,36 +1,30 @@
 .. _tutorial-templates:
 
-Step 6: The Templates
+第六步: 模版
 =====================
 
-Now we should start working on the templates.  If we request the URLs now
-we would only get an exception that Flask cannot find the templates.  The
-templates are using `Jinja2`_ syntax and have autoescaping enabled by
-default.  This means that unless you mark a value in the code with
-:class:`~flask.Markup` or with the ``|safe`` filter in the template,
-Jinja2 will ensure that special characters such as ``<`` or ``>`` are
-escaped with their XML equivalents.
+现在我们可以开始制作我们的网页模版了。如果我们现在访问URL，我们会得到一个
+“Flask无法找到模版文件”的异常。我们的模版将使用 `Jinja2`_ 的格式，而且默
+认是打开自动转义的。这也就是说，除非我们在代码中用 :class:`~flask.Markup` 
+标记一个值，或者在模版中用 ``|safe`` 过滤器，否则Jinja2会将一些特殊字符，
+如 ``<`` 或 ``>`` 用XML格式来转义。
 
-We are also using template inheritance which makes it possible to reuse
-the layout of the website in all pages.
+我们将使用模版继承机制来使所有的页面使用同一个布局。
 
-Put the following templates into the `templates` folder:
+把以下的模版放在 `template` 目录下：
 
 .. _Jinja2: http://jinja.pocoo.org/2/documentation/templates
 
 layout.html
 -----------
 
-This template contains the HTML skeleton, the header and a link to log in
-(or log out if the user was already logged in).  It also displays the
-flashed messages if there are any.  The ``{% block body %}`` block can be
-replaced by a block of the same name (``body``) in a child template.
+这个模版包含了HTML的主要结构，标题和一个登陆的链接（或者登出如果用户已经登
+陆）。它还负责显示flashed messages。 ``{% block body %}`` 可以被子模版的相
+同名字（ ``body`` )的结构所替换
 
-The :class:`~flask.session` dict is available in the template as well and
-you can use that to check if the user is logged in or not.  Note that in
-Jinja you can access missing attributes and items of objects / dicts which
-makes the following code work, even if there is no ``'logged_in'`` key in
-the session:
+:class:`~flask.session` 字典在模版中也是可以访问的。所以你可以用session来
+检查用户是否已登陆。注意在Jinja中，你可以访问对象或字典的未使用过的属性和
+成员。就如下面的代码一样，即使session中没有 ``'logged_in'`` :
 
 .. sourcecode:: html+jinja
 
@@ -55,11 +49,9 @@ the session:
 show_entries.html
 -----------------
 
-This template extends the `layout.html` template from above to display the
-messages.  Note that the `for` loop iterates over the messages we passed
-in with the :func:`~flask.render_template` function.  We also tell the
-form to submit to your `add_entry` function and use `POST` as `HTTP`
-method:
+这个模版继承自上面的 `layout.html` ,来显示文章。 `for` 循环遍历所有的文章。
+我们通过 :func:`~flask.render_template` 来传入参数。我们还告诉表单使用 
+`HTTP` 的 `POST` 方法提交到 `add_entry` 函数:
 
 .. sourcecode:: html+jinja
 
@@ -88,8 +80,7 @@ method:
 login.html
 ----------
 
-Finally the login template which basically just displays a form to allow
-the user to login:
+最后是登陆页面的模版。它仅仅是显示一个表单来允许用户登陆：
 
 .. sourcecode:: html+jinja
 
@@ -108,4 +99,4 @@ the user to login:
       </form>
     {% endblock %}
 
-Continue with :ref:`tutorial-css`.
+继续 :ref:`tutorial-css`.
