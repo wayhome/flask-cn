@@ -1,10 +1,9 @@
 .. _tutorial-testing:
 
-Bonus: Testing the Application
+附加: 自动测试
 ==============================
 
-Now that you have finished the application and everything works as
-expected, it's probably not a good idea to add automated tests to simplify
-modifications in the future.  The application above is used as a basic
-example of how to perform unittesting in the :ref:`testing` section of the
-documentation.  Go there to see how easy it is to test Flask applications.
+由于你已经完成了整个应用，而且一切都运行的很完美，所以从将来修改的角度
+看，添加自动测试代码也许不是一个好主意。文档:ref:`testing` 区域中以上
+面的应用为例子演示了如何进行自动单元测试。你可以去看看测试Flask应用是
+多么简单的一件事。

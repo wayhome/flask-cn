@@ -1,11 +1,10 @@
 .. _tutorial-css:
 
-Step 7: Adding Style
+第七步: 添加样式
 ====================
 
-Now that everything else works, it's time to add some style to the
-application.  Just create a stylesheet called `style.css` in the `static`
-folder we created before:
+现在其他的东西都能工作了，是时候来给我们的应用添加一点样式了。
+我们先前创建了 `static` 文件夹，在这里面新建一个css文件 `style.css` :
 
 .. sourcecode:: css
 
@@ -28,4 +27,4 @@ folder we created before:
                       border: 1px solid #AACBE2; }
     .error          { background: #F0D6D6; padding: 0.5em; }
 
-Continue with :ref:`tutorial-testing`.
+继续 :ref:`tutorial-testing`.
