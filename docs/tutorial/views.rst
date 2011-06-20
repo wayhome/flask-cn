@@ -1,24 +1,22 @@
 .. _tutorial-views:
 
-Step 5: The View Functions
-==========================
+第五步: 视图函数
+================
 
-Now that the database connections are working we can start writing the
-view functions.  We will need four of them:
+现在数据库连接已经可以工作了，我们终于可以开始写我们的视图函数了。我们一共
+需要写4个：
 
-Show Entries
-------------
+显示文章
+--------
 
-This view shows all the entries stored in the database.  It listens on the
-root of the application and will select title and text from the database.
-The one with the highest id (the newest entry) will be on top.  The rows
-returned from the cursor are tuples with the columns ordered like specified
-in the select statement.  This is good enough for small applications like
-here, but you might want to convert them into a dict.  If you are
-interested in how to do that, check out the :ref:`easy-querying` example.
+这个视图将会显示数据库中所有的文章。它会绑定在应用的根地址，并且从数据库中
+查询出文章的标题和内容。最新发表的文章会显示在最上方。从cursor返回的数据是
+存放在一个tuple中，而且以select语句中的指定的顺序排序。对我们这个小应用来说
+tuple已经满足要求了，但是也许你想把它转换成dict。那么，你可以参考 
+:ref:`easy-querying` 的示例。
 
-The view function will pass the entries as dicts to the
-`show_entries.html` template and return the rendered one::
+视图函数会把所有的文章以字典的方式传送给 `show_entries.html`
+模版，然后向浏览器返回render过的::
 
     @app.route('/')
     def show_entries():
@@ -26,14 +24,13 @@ The view function will pass the entries as dicts to the
         entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
         return render_template('show_entries.html', entries=entries)
 
-Add New Entry
--------------
+添加一篇新文章
+--------------
 
-This view lets the user add new entries if he's logged in.  This only
-responds to `POST` requests, the actual form is shown on the
-`show_entries` page.  If everything worked out well we will
-:func:`~flask.flash` an information message to the next request and
-redirect back to the `show_entries` page::
+这个视图用来让已登陆的用户发表新文章。它只对以 `POST`
+方式提交的请求回应，实际的表单显示在 `show_entries`
+页面上。如果一切都没有出问题的话，我们用 `~flask.flash`
+向下一次请求发送一条信息，然后重定向回 `show_entries` 页面::
 
     @app.route('/add', methods=['POST'])
     def add_entry():
@@ -45,8 +42,8 @@ redirect back to the `show_entries` page::
         flash('New entry was successfully posted')
         return redirect(url_for('show_entries'))
 
-Note that we check that the user is logged in here (the `logged_in` key is
-present in the session and `True`).
+注意，我们在这里检查了用户是否已经登陆（ `logged_in`
+键在session中存在，而且值为 `True` ）。
 
 .. admonition:: Security Note
 
@@ -55,16 +52,14 @@ present in the session and `True`).
    you use string formatting to build SQL statements.
    See :ref:`sqlite3` for more.
 
-Login and Logout
-----------------
+登陆和登出
+----------
 
-These functions are used to sign the user in and out.  Login checks the
-username and password against the ones from the configuration and sets the
-`logged_in` key in the session.  If the user logged in successfully, that
-key is set to `True`, and the user is redirected back to the `show_entries`
-page.  In addition, a message is flashed that informs the user that he or
-she was logged in successfully.  If an error occurred, the template is
-notified about that, and the user is asked again::
+这些函数是用来让用户登陆和注销的。登陆函数会检查用户名和秘密，并和配置文件
+中的数据进行比较，并相应的设置session中的 `logged_in`
+键。如果用户登陆成功，那么这个键会被设置成 `True` ，然后用户会被重定向到
+`show_entries` 页面。并且还会flash一条消息来提示用户登陆成功。如果登陆发生
+错误,那么模版会得知这一点，然后提示用户重新登陆::
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -80,12 +75,11 @@ notified about that, and the user is asked again::
                 return redirect(url_for('show_entries'))
         return render_template('login.html', error=error)
 
-The logout function, on the other hand, removes that key from the session
-again.  We use a neat trick here: if you use the :meth:`~dict.pop` method
-of the dict and pass a second parameter to it (the default), the method
-will delete the key from the dictionary if present or do nothing when that
-key is not in there.  This is helpful because now we don't have to check
-if the user was logged in.
+注销函数所作的正好相反。它从session中删除 `logged_in` 键。我们在这里使用的
+一个简洁的小技巧：如果你在使用字典的 :meth:`~dict.pop` 方法时，给了它第二个
+参数（默认），那么这个方法在处理的时候，会先查询是否存在这个键，如果存在，
+则删除它，如果不存在，那么什么都不做。这个特性很有用，因为这样我们在处理的
+时候，就不需要先检查用户是否已登陆。
 
 ::
 
@@ -95,4 +89,4 @@ if the user was logged in.
         flash('You were logged out')
         return redirect(url_for('show_entries'))
 
-Continue with :ref:`tutorial-templates`.
+继续 :ref:`tutorial-templates`.
