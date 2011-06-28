@@ -40,7 +40,7 @@ exception to the :attr:`~flask.Flask.logger`.
 
 而这只是你所要面对的问题中一些最简单的例子。那我们将如何来解决这些问题呢？在默认的情况下，你的
 应用程序在生产模式下运行，Flask将显示一个十分简单的页面并记录这些异常通过使用
-:attr:`~flask.Flask.logger`。
+ :attr:`~flask.Flask.logger`。
 
 But there is more you can do, and we will cover some better setups to deal
 with errors.
@@ -48,6 +48,7 @@ with errors.
 但是你可以做得更多，并且我们将会讨论几种更好的方案来处理这些异常。
 
 Error Mails
+报错邮件
 -----------
 
 If the application runs in production mode (which it will do on your
@@ -58,15 +59,28 @@ chances are, the place it guessed is not the place where the user has
 permission to create a logfile.  Also, for most small applications nobody
 will look at the logs anyways.
 
+如果应用程序以生产模式运行（通常在服务器上你会这么做)，在默认情况下你不会看见任何的日志信息。
+这是为什么呢？因为Flask是一个零配置框架，而如果没有配置的话，框架又应该把日志文件放到哪里去
+呢？依靠假设并不是一个很好的方法，因为总是会存在各种不同的可能，也许那个我们假设放置日志的地方
+用户并没有权限访问。另外，对于大多数小型的应用程序来说也不会有人去关注他的日志。
+
 In fact, I promise you right now that if you configure a logfile for the
 application errors you will never look at it except for debugging an issue
 when a user reported it for you.  What you want instead is a mail the
 second the exception happened.  Then you get an alert and you can do
 something about it.
 
+实际上，我可以向你保证即使你为你的程序配置了放置错误信息的日志文件，你也永远不会去查看他，除非
+当你的用户向你报告了一个事件而你需要去排查错误的时候。你所需要的只是，当异常第二次发生时接收到
+一封报警邮件，然后你在针对其中的情况进行处理。
+
 Flask uses the Python builtin logging system, and it can actually send
 you mails for errors which is probably what you want.  Here is how you can
-configure the Flask logger to send you mails for exceptions::
+configure the Flask logger to send you mails for exceptions:
+
+Flask使用了python内置的日志系统，并且他会在你需要是向你发生关于异常的邮件。这里是一个关于如何
+配置Flask的日志以向你发送异常邮件的例子::
+
 
     ADMINS = ['yourname@example.com']
     if not app.debug:
@@ -86,14 +100,25 @@ your mail server requires credentials, these can also be provided.  For
 that check out the documentation for the
 :class:`~logging.handlers.SMTPHandler`.
 
+这是如何操作的呢？我们创建了一个新的类 :class:`~logging.handlers.SMTPHandler` ，他
+将通过  ``127.0.0.1`` 的邮件服务器向所有的 `ADMINS` 用户发送标题为“YourApplication
+ Failed”邮件，并且将发件地址配置为 *server-error@example.com* 。此外，我们还提供了对
+需要证书的邮件服务器的支持，关于这部分的文档，请查看 :class:`~logging.handlers.SMTPHandler` 。
+
 We also tell the handler to only send errors and more critical messages.
 Because we certainly don't want to get a mail for warnings or other
 useless logs that might happen during request handling.
+
+邮件处理器只会发送异常和错误的信息，因为我们并不希望通过邮件获取警告信息或其他一些处理过程中
+产生的没有的日志。
+
 
 Before you run that in production, please also look at :ref:`logformat` to
 put more information into that error mail.  That will save you from a lot
 of frustration.
 
+当你在产品中使用它们的时候，请务必查看 :ref:`logformat` 以使得报错邮件中包含更多的信息。这
+些信息将为你解决很多的烦恼。
 
 Logging to a File
 -----------------
