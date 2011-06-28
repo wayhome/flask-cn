@@ -1,6 +1,7 @@
 .. _application-errors:
 
 Handling Application Errors
+处理应用异常
 ===========================
 
 .. versionadded:: 0.3
@@ -11,6 +12,10 @@ exceptions from time to time.  Why?  Because everything else involved will
 fail.  Here some situations where perfectly fine code can lead to server
 errors:
 
+应用程序处理失败，服务器处理失败。在你的产品中这些异常迟早会暴露出来，即使你的代码是完全正确的，
+你仍然会一次次的面对这些异常。原因？因为所有的一切都有可能失败。在以下的几种情况中，完美的代码
+却导致了服务器的错误：
+
 -   the client terminated the request early and the application was still
     reading from the incoming data.
 -   the database server was overloaded and could not handle the query.
@@ -20,13 +25,27 @@ errors:
 -   a programming error in a library you are using
 -   network connection of the server to another system failed.
 
+-	当应用系统正在读取传入的数据时，客户端过早的结束了请求。
+-	数据库超过负荷，无法处理查询请求。
+-	文件系统没有空间了。
+-	硬盘挂了。
+-	终端服务器超过负荷。
+-	你所使用的代码库中存在编程错误。
+-	服务器与其他系统的网络连接中断了。
+
 And that's just a small sample of issues you could be facing.  So how do we
 deal with that sort of problem?  By default if your application runs in
 production mode, Flask will display a very simple page for you and log the
 exception to the :attr:`~flask.Flask.logger`.
 
+而这只是你所要面对的问题中一些最简单的例子。那我们将如何来解决这些问题呢？在默认的情况下，你的
+应用程序在生产模式下运行，Flask将显示一个十分简单的页面并记录这些异常通过使用
+:attr:`~flask.Flask.logger`。
+
 But there is more you can do, and we will cover some better setups to deal
 with errors.
+
+但是你可以做得更多，并且我们将会讨论几种更好的方案来处理这些异常。
 
 Error Mails
 -----------
