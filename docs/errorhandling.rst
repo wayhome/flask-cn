@@ -2,6 +2,7 @@
 
 Handling Application Errors 处理应用异常
 =====================================
+:译者: plucury#gmail.com
 
 .. versionadded:: 0.3
 
