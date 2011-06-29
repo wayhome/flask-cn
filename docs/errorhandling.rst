@@ -166,7 +166,7 @@ above, just make sure to use a lower setting (I would recommend
 `WARNING`):
 
 一旦你选择了你的日志处理类，你就可以向上文中配置SMTP处理类一样的来配置它们，唯一需要注意的
-是使用更低级别的设置（我这里使用的是`WARNING`）
+是使用更低级别的设置（我这里使用的是`WARNING`）::
 
     if not app.debug:
         import logging
