@@ -107,7 +107,7 @@ Because we certainly don't want to get a mail for warnings or other
 useless logs that might happen during request handling.
 
 邮件处理器只会发送异常和错误的信息，因为我们并不希望通过邮件获取警告信息或其他一些处理过程中
-产生的没有的日志。
+产生的没有用的日志。
 
 
 Before you run that in production, please also look at :ref:`logformat` to
@@ -117,8 +117,8 @@ of frustration.
 当你在产品中使用它们的时候，请务必查看 :ref:`logformat` 以使得报错邮件中包含更多的信息。这
 些信息将为你解决很多的烦恼。
 
-Logging to a File
------------------
+Logging to a File 日志文件
+-------------------------
 
 Even if you get mails, you probably also want to log warnings.  It's a
 good idea to keep as much information around that might be required to
@@ -126,23 +126,46 @@ debug a problem.  Please note that Flask itself will not issue any
 warnings in the core system, so it's your responsibility to warn in the
 code if something seems odd.
 
+即使你已经有了报错邮件，你可能仍然希望能够查看到警告信息。为了排查问题，尽可能的保存更多的
+信息不失为一个好主意。请注意，Flask的系统核心本身并不会去记录任何警告信息，因此编写记录那
+些看起来不对劲的地方的代码将是你的责任。
+
 There are a couple of handlers provided by the logging system out of the
 box but not all of them are useful for basic error logging.  The most
 interesting are probably the following:
 
+这里提供了几个处理类，但对于基本的记录错误日志而言他们并不是总是那么的有用。而其中最值得我们
+注意的是以下几项:
+
 -   :class:`~logging.handlers.FileHandler` - logs messages to a file on the
     filesystem.
+    
+-	:class:`~logging.handlers.FileHandler` - 将日志信息写入文件系统中
+
 -   :class:`~logging.handlers.RotatingFileHandler` - logs messages to a file
     on the filesystem and will rotate after a certain number of messages.
+
+-   :class:`~logging.handlers.RotatingFileHandler` - 将日志信息写入文件系统中，并且
+	当日志达到一定数量时会滚动记录最新的信息。
+
 -   :class:`~logging.handlers.NTEventLogHandler` - will log to the system
     event log of a Windows system.  If you are deploying on a Windows box,
     this is what you want to use.
+    
+-   :class:`~logging.handlers.NTEventLogHandler` - 将日志发送到windows系统的日
+	志事件中。如果你的系统部署在windows环境中，那么这正是你想要的。
+    
 -   :class:`~logging.handlers.SysLogHandler` - sends logs to a UNIX
     syslog.
 
+-   :class:`~logging.handlers.SysLogHandler` - 将日志发送到UNIX的系统日志中。
+
 Once you picked your log handler, do like you did with the SMTP handler
 above, just make sure to use a lower setting (I would recommend
-`WARNING`)::
+`WARNING`):
+
+一旦你选择了你的日志处理类，你就可以向上文中配置SMTP处理类一样的来配置它们，唯一需要注意的
+是使用更低级别的设置（我这里使用的是`WARNING`）
 
     if not app.debug:
         import logging
