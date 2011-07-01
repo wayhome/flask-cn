@@ -300,7 +300,7 @@ For more information, head over to the official documentation.
 获取更多的信息，请查看官方文档。
 
 
-Other Libraries
+Other Libraries 其他代码库
 ---------------
 
 So far we only configured the logger your application created itself.
@@ -311,9 +311,16 @@ it.  There might be a situation in which you want to have multiple
 separate applications running side by side in the same Python interpreter
 and then it becomes impossible to have different logging setups for those.
 
+目前为止，我们只配置了你的程序自身的日志。而其他的代码库同样可以需要记录日志。比如，SQLAlchemy
+使用了很多日志。使用 :mod:`logging` 包可以一次性的配置所有的日志，当我并不推荐那样做。因为当
+多个程序在同一个Python解释器上运行是，你将无法单独的对他们进行配置。
+
 Instead, I would recommend figuring out which loggers you are interested
 in, getting the loggers with the :func:`~logging.getLogger` function and
-iterating over them to attach handlers::
+iterating over them to attach handlers:
+
+相对的，我推荐你只对你所关注的日志进行配置，通过 :func:`~logging.getLogger` 方法获取
+所有的日志处理器，并通过迭代获取他们::
 
     from logging import getLogger
     loggers = [app.logger, getLogger('sqlalchemy'),
