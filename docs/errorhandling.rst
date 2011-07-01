@@ -147,14 +147,14 @@ interesting are probably the following:
     on the filesystem and will rotate after a certain number of messages.
 
 -   :class:`~logging.handlers.RotatingFileHandler` - 将日志信息写入文件系统中，并且
-	当日志达到一定数量时会滚动记录最新的信息。
+当日志达到一定数量时会滚动记录最新的信息。
 
 -   :class:`~logging.handlers.NTEventLogHandler` - will log to the system
     event log of a Windows system.  If you are deploying on a Windows box,
     this is what you want to use.
     
 -   :class:`~logging.handlers.NTEventLogHandler` - 将日志发送到windows系统的日
-	志事件中。如果你的系统部署在windows环境中，那么这正是你想要的。
+志事件中。如果你的系统部署在windows环境中，那么这正是你想要的。
     
 -   :class:`~logging.handlers.SysLogHandler` - sends logs to a UNIX
     syslog.
@@ -166,7 +166,7 @@ above, just make sure to use a lower setting (I would recommend
 `WARNING`):
 
 一旦你选择了你的日志处理类，你就可以向上文中配置SMTP处理类一样的来配置它们，唯一需要注意的
-是使用更低级别的设置（我这里使用的是`WARNING`）::
+是使用更低级别的设置（我这里使用的是 `WARNING`）::
 
     if not app.debug:
         import logging
@@ -177,8 +177,8 @@ above, just make sure to use a lower setting (I would recommend
 
 .. _logformat:
 
-Controlling the Log Format
---------------------------
+Controlling the Log Format 日志格式
+----------------------------------
 
 By default a handler will only write the message string into a file or
 send you that message as mail.  A log record stores more information,
@@ -186,13 +186,21 @@ and it makes a lot of sense to configure your logger to also contain that
 information so that you have a better idea of why that error happened, and
 more importantly, where it did.
 
+在默认情况下，处理器只会将日志信息写入文件或是用邮件发送给你。而日志应该记录更多的信息，你必须
+配置你的日志，使它能够让你更方便的知道发生了什么样的错误，以及更重要的是告诉你哪里发生了错误。
+
 A formatter can be instantiated with a format string.  Note that
 tracebacks are appended to the log entry automatically.  You don't have to
 do that in the log formatter format string.
 
+格式处理器（formatter）可以让你获取格式化的字符串。你需要知道是日志的连接是自动进行的，你不需要
+将它包含在格式处理器的格式化字符串中。
+
 Here some example setups:
 
-Email
+这里有几个例子：
+
+Email 电子邮件
 `````
 
 ::
@@ -210,7 +218,7 @@ Email
     %(message)s
     '''))
 
-File logging
+File logging 日志文件
 ````````````
 
 ::
@@ -222,33 +230,37 @@ File logging
     ))
 
 
-Complex Log Formatting
+Complex Log Formatting 复杂的日志格式
 ``````````````````````
 
 Here is a list of useful formatting variables for the format string.  Note
 that this list is not complete, consult the official documentation of the
 :mod:`logging` package for a full list.
 
+这里是一系列用户格式化字符串的变量。这里的列表并不完整，你可以通过查看官方文档的 :mod:`logging` 
+部分来获取完整的列表。
+
 .. tabularcolumns:: |p{3cm}|p{12cm}|
 
 +------------------+----------------------------------------------------+
-| Format           | Description                                        |
+| Format 格式       | Description 描述                                    |
 +==================+====================================================+
-| ``%(levelname)s``| Text logging level for the message                 |
+| ``%(levelname)s``| Text logging level for the message  日志等级         |
 |                  | (``'DEBUG'``, ``'INFO'``, ``'WARNING'``,           |
 |                  | ``'ERROR'``, ``'CRITICAL'``).                      |
 +------------------+----------------------------------------------------+
 | ``%(pathname)s`` | Full pathname of the source file where the         |
 |                  | logging call was issued (if available).            |
+|		           | 调用日志的源文件的全路径（如果可以获得的话）		            |
 +------------------+----------------------------------------------------+
-| ``%(filename)s`` | Filename portion of pathname.                      |
+| ``%(filename)s`` | Filename portion of pathname.文件名                 |
 +------------------+----------------------------------------------------+
-| ``%(module)s``   | Module (name portion of filename).                 |
+| ``%(module)s``   | Module (name portion of filename).模块名            |
 +------------------+----------------------------------------------------+
-| ``%(funcName)s`` | Name of function containing the logging call.      |
+| ``%(funcName)s`` | Name of function containing the logging call. 方法名     |
 +------------------+----------------------------------------------------+
 | ``%(lineno)d``   | Source line number where the logging call was      |
-|                  | issued (if available).                             |
+|                  | issued (if available).调用日志的代码所在源文件中的行号                             |
 +------------------+----------------------------------------------------+
 | ``%(asctime)s``  | Human-readable time when the LogRecord` was        |
 |                  | created.  By default this is of the form           |
@@ -257,26 +269,35 @@ that this list is not complete, consult the official documentation of the
 |                  | This can be changed by subclassing the formatter   |
 |                  | and overriding the                                 |
 |                  | :meth:`~logging.Formatter.formatTime` method.      |
+|				   | 日志中创建的可读时间。默认的格式是 ``"2003-07-08 16:49:45,896"`` （逗号后的时间是毫秒）。可以通过复写 :meth:`~logging.Formatter.formatTime` 方法来修改它|
 +------------------+----------------------------------------------------+
-| ``%(message)s``  | The logged message, computed as ``msg % args``     |
+| ``%(message)s``  | The logged message, computed as ``msg % args`` 日志信息。同 ``msg % args``    |
 +------------------+----------------------------------------------------+
 
 If you want to further customize the formatting, you can subclass the
 formatter.  The formatter has three interesting methods:
 
+如果你需要更多的定制化格式，你可以实现格式处理器（formatter）的子类。它有以下三个有趣的方法:
+
 :meth:`~logging.Formatter.format`:
     handles the actual formatting.  It is passed a
     :class:`~logging.LogRecord` object and has to return the formatted
     string.
+    处理实际的格式。它需要接收一个 :class:`~logging.LogRecord` 对象，并返回一个被
+    格式话的字符串。
 :meth:`~logging.Formatter.formatTime`:
     called for `asctime` formatting.  If you want a different time format
     you can override this method.
+    调用  `asctime` 进行格式化。如果你需要不同的时间格式，可以复写这个方法。
 :meth:`~logging.Formatter.formatException`
     called for exception formatting.  It is passed an :attr:`~sys.exc_info`
     tuple and has to return a string.  The default is usually fine, you
     don't have to override it.
+    调用异常格式化。它接收一个 :attr:`~sys.exc_info` 元组并返回一个字符串。通常它会很好
+    的运行，你并不需要复写它。
 
 For more information, head over to the official documentation.
+获取更多的信息，请查看官方文档。
 
 
 Other Libraries
