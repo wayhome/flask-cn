@@ -21,7 +21,7 @@ setup(
     packages = [],
     include_package_data = True, 
     zip_safe=False,
-    install_requires=['Flask',],
+    install_requires=['Flask==0.7',],
     classifiers = [
         "Programming Language :: Python",
         "Operating System :: OS Independent",
