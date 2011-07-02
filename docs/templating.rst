@@ -1,3 +1,5 @@
+.. _templating:
+
 模版
 ====
 :译者: feichao#zoho.com

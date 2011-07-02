@@ -23,7 +23,7 @@ Loading jQuery
 In order to use jQuery, you have to download it first and place it in the
 static folder of your application and then ensure it's loaded.  Ideally
 you have a layout template that is used for all pages where you just have
-to add a script statement to your `head` to load jQuery:
+to add a script statement to the bottom of your `<body>` to load jQuery:
 
 .. sourcecode:: html
 
@@ -35,15 +35,15 @@ Another method is using Google's `AJAX Libraries API
 
 .. sourcecode:: html
 
-    <script type=text/javascript
-      src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
+    <script>window.jQuery || document.write('<script src="{{
+      url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
 
-In this case you don't have to put jQuery into your static folder, it will
-instead be loaded from Google directly.  This has the advantage that your
-website will probably load faster for users if they were to at least one
+In this case you have to put jQuery into your static folder as a fallback, but it will
+first try to load it directly from Google. This has the advantage that your
+website will probably load faster for users if they went to at least one
 other website before using the same jQuery version from Google because it
-will already be in the browser cache.  Downside is that if you don't have
-network connectivity during development jQuery will not load.
+will already be in the browser cache.
 
 Where is My Site?
 -----------------
@@ -53,8 +53,8 @@ is quite simple: it's on localhost port something and directly on the root
 of that server.  But what if you later decide to move your application to
 a different location?  For example to ``http://example.com/myapp``?  On
 the server side this never was a problem because we were using the handy
-:func:`~flask.url_for` function that did could answer that question for
-us, but if we are using jQuery we should better not hardcode the path to
+:func:`~flask.url_for` function that could answer that question for
+us, but if we are using jQuery we should not hardcode the path to
 the application but make that dynamic, so how can we do that?
 
 A simple method would be to add a script tag to our page that sets a
@@ -108,7 +108,7 @@ template.  This template will load jQuery as above and have a little form
 we can add two numbers and a link to trigger the function on the server
 side.
 
-Note that we are using the :meth:`~werkzeug.MultiDict.get` method here
+Note that we are using the :meth:`~werkzeug.datastructures.MultiDict.get` method here
 which will never fail.  If the key is missing a default value (here ``0``)
 is returned.  Furthermore it can convert values to a specific type (like
 in our case `int`).  This is especially handy for code that is
@@ -118,9 +118,9 @@ special error reporting in that case.
 The HTML
 --------
 
-You index.html template either has to extend a `layout.html` template with
+Your index.html template either has to extend a `layout.html` template with
 jQuery loaded and the `$SCRIPT_ROOT` variable set, or do that on the top.
-Here the HTML code needed for our little application (`index.html`).
+Here's the HTML code needed for our little application (`index.html`).
 Notice that we also drop the script directly into the HTML here.  It is
 usually a better idea to have that in a separate script file:
 

@@ -17,7 +17,7 @@ setup(
     description = "Flask documents (chinese translation)",
     long_description = (
         read_file("README") + "\n\n"),
-    version = "0.6",
+    version = "0.7",
     packages = [],
     include_package_data = True, 
     zip_safe=False,

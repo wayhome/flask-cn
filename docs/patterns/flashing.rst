@@ -4,7 +4,7 @@ Message Flashing
 ================
 
 Good applications and user interfaces are all about feedback.  If the user
-does not get enough feedback he will probably end up hating the
+does not get enough feedback they will probably end up hating the
 application.  Flask provides a really simple way to give feedback to a
 user with the flashing system.  The flashing system basically makes it
 possible to record a message at the end of a request and access it next
@@ -14,7 +14,7 @@ template that does this.
 Simple Flashing
 ---------------
 
-So here a full example::
+So here is a full example::
 
     from flask import flash, redirect, url_for, render_template
 
@@ -30,7 +30,7 @@ So here a full example::
                request.form['password'] != 'secret':
                 error = 'Invalid credentials'
             else:
-                flash('You were sucessfully logged in')
+                flash('You were successfully logged in')
                 return redirect(url_for('index'))
         return render_template('login.html', error=error)
 
@@ -100,7 +100,7 @@ to the :func:`~flask.flash` function::
 
 Inside the template you then have to tell the
 :func:`~flask.get_flashed_messages` function to also return the
-categories.  The loop looks slighty different in that situation then:
+categories.  The loop looks slightly different in that situation then:
 
 .. sourcecode:: html+jinja
 

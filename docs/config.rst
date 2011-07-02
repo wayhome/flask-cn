@@ -51,22 +51,37 @@ The following configuration values are used internally by Flask:
 
 .. tabularcolumns:: |p{6.5cm}|p{8.5cm}|
 
-=============================== =========================================
-``DEBUG``                       enable/disable debug mode
-``TESTING``                     enable/disable testing mode
-``SECRET_KEY``                  the secret key
-``SESSION_COOKIE_NAME``         the name of the session cookie
-``PERMANENT_SESSION_LIFETIME``  the lifetime of a permanent session as
-                                :class:`datetime.timedelta` object.
-``USE_X_SENDFILE``              enable/disable x-sendfile
-``LOGGER_NAME``                 the name of the logger
-``SERVER_NAME``                 the name of the server.  Required for
-                                subdomain support (eg: ``'localhost'``)
-``MAX_CONTENT_LENGTH``          If set to a value in bytes, Flask will
-                                reject incoming requests with a
-                                content length greater than this by
-                                returning a 413 status code.
-=============================== =========================================
+================================= =========================================
+``DEBUG``                         enable/disable debug mode
+``TESTING``                       enable/disable testing mode
+``PROPAGATE_EXCEPTIONS``          explicitly enable or disable the
+                                  propagation of exceptions.  If not set or
+                                  explicitly set to `None` this is
+                                  implicitly true if either `TESTING` or
+                                  `DEBUG` is true.
+``PRESERVE_CONTEXT_ON_EXCEPTION`` By default if the application is in
+                                  debug mode the request context is not
+                                  popped on exceptions to enable debuggers
+                                  to introspect the data.  This can be
+                                  disabled by this key.  You can also use
+                                  this setting to force-enable it for non
+                                  debug execution which might be useful to
+                                  debug production applications (but also
+                                  very risky).
+``SECRET_KEY``                    the secret key
+``SESSION_COOKIE_NAME``           the name of the session cookie
+``PERMANENT_SESSION_LIFETIME``    the lifetime of a permanent session as
+                                  :class:`datetime.timedelta` object.
+``USE_X_SENDFILE``                enable/disable x-sendfile
+``LOGGER_NAME``                   the name of the logger
+``SERVER_NAME``                   the name and port number of the server.
+                                  Required for subdomain support (e.g.:
+                                  ``'localhost:5000'``)
+``MAX_CONTENT_LENGTH``            If set to a value in bytes, Flask will
+                                  reject incoming requests with a
+                                  content length greater than this by
+                                  returning a 413 status code.
+================================= =========================================
 
 .. admonition:: More on ``SERVER_NAME``
 
@@ -95,6 +110,9 @@ The following configuration values are used internally by Flask:
 
 .. versionadded:: 0.6
    ``MAX_CONTENT_LENGTH``
+
+.. versionadded:: 0.7
+   ``PROPAGATE_EXCEPTIONS``, ``PRESERVE_CONTEXT_ON_EXCEPTION``
 
 Configuring from Files
 ----------------------
@@ -150,7 +168,7 @@ a little harder.  There is no one 100% solution for this problem in
 general, but there are a couple of things you can do to improve that
 experience:
 
-1.  create your application in a function and register modules on it.
+1.  create your application in a function and register blueprints on it.
     That way you can create multiple instances of your application with
     different configurations attached which makes unittesting a lot
     easier.  You can use this to pass in configuration as needed.
@@ -200,7 +218,7 @@ configuration::
     class DevelopmentConfig(Config):
         DEBUG = True
 
-    class TestinConfig(Config):
+    class TestingConfig(Config):
         TESTING = True
 
 To enable such a config you just have to call into
@@ -222,7 +240,8 @@ your configuration files.  However here a list of good recommendations:
     even create your own script for sourcing that activates a virtualenv
     and exports the development configuration for you.
 -   Use a tool like `fabric`_ in production to push code and
-    configurations sepearately to the production server(s).  For some
-    details about how to do that, head over to the :ref:`deploy` pattern.
+    configurations separately to the production server(s).  For some
+    details about how to do that, head over to the
+    :ref:`fabric-deployment` pattern.
 
 .. _fabric: http://fabfile.org/

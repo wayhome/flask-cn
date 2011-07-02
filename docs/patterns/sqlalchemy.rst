@@ -47,6 +47,10 @@ Here the example `database.py` module for your application::
     Base.query = db_session.query_property()
 
     def init_db():
+        # import all modules here that might define models so that
+        # they will be registered properly on the metadata.  Otherwise
+        # you will have to import them first before calling init_db()
+        import yourapplication.models
         Base.metadata.create_all(bind=engine)
 
 To define your models, just subclass the `Base` class that was created by
@@ -61,10 +65,9 @@ automatically remove database sessions at the end of the request for you::
 
     from yourapplication.database import db_session
 
-    @app.after_request
-    def shutdown_session(response):
+    @app.teardown_request
+    def shutdown_session(exception=None):
         db_session.remove()
-        return response
 
 Here is an example model (put this into `models.py`, e.g.)::
 
@@ -84,6 +87,11 @@ Here is an example model (put this into `models.py`, e.g.)::
         def __repr__(self):
             return '<User %r>' % (self.name)
 
+To create the database you can use the `init_db` function:
+
+>>> from yourapplication.database import init_db
+>>> init_db()
+
 You can insert entries into the database like this:
 
 >>> from yourapplication.database import db_session
@@ -101,7 +109,7 @@ Querying is simple as well:
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _declarative:
-   http://www.sqlalchemy.org/docs/reference/ext/declarative.html
+   http://www.sqlalchemy.org/docs/orm/extensions/declarative.html
 
 Manual Object Relational Mapping
 --------------------------------
@@ -131,10 +139,9 @@ each request.  Put this into your application module::
 
     from yourapplication.database import db_session
 
-    @app.after_request
-    def shutdown_session(response):
+    @app.teardown_request
+    def shutdown_session(exception=None):
         db_session.remove()
-        return response
 
 Here is an example table and model (put this into `models.py`)::
 

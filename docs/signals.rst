@@ -41,13 +41,9 @@ the optional second argument specifies a sender.  To unsubscribe from a
 signal, you can use the :meth:`~blinker.base.Signal.disconnect` method.
 
 For all core Flask signals, the sender is the application that issued the
-signal.  This however might not be true for Flask extensions, so consult
-the documentation when subscribing to signals.
-
-Additionally there is a convenient helper method that allows you to
-temporarily subscribe a function to a signal.  This is especially helpful
-for unittests (:meth:`~blinker.base.Signal.temporarily_connected_to`).
-This has to be used in combination with the `with` statement.
+signal.  When you subscribe to a signal, be sure to also provide a sender
+unless you really want to listen for signals of all applications.  This is
+especially true if you are developing an extension.
 
 Here for example a helper context manager that can be used to figure out
 in a unittest which templates were rendered and what variables were passed
@@ -57,19 +53,19 @@ to the template::
     from contextlib import contextmanager
 
     @contextmanager
-    def captured_templates():
+    def captured_templates(app):
         recorded = []
-        def record(template, context):
+        def record(sender, template, context):
             recorded.append((template, context))
-        template_rendered.connect(record)
+        template_rendered.connect(record, app)
         try:
             yield recorded
         finally:
-            template_rendered.disconnect(record)
+            template_rendered.disconnect(record, app)
 
 This can now easily be paired with a test client::
 
-    with captured_templates() as templates:
+    with captured_templates(app) as templates:
         rv = app.test_client().get('/')
         assert rv.status_code == 200
         assert len(templates) == 1
@@ -77,9 +73,35 @@ This can now easily be paired with a test client::
         assert template.name == 'index.html'
         assert len(context['items']) == 10
 
-All the template rendering in the code, the `with` block wraps will now be
-recorded in the `templates` variable.  Whenever a template is rendered,
-the template object as well as context is appended to it.
+All the template rendering in the code issued by the application `app`
+in the body of the `with` block will now be recorded in the `templates`
+variable.  Whenever a template is rendered, the template object as well as
+context are appended to it.
+
+Additionally there is a convenient helper method
+(:meth:`~blinker.base.Signal.connected_to`).  that allows you to
+temporarily subscribe a function to a signal with is a context manager on
+its own.  Because the return value of the context manager cannot be
+specified that way one has to pass the list in as argument::
+
+    from flask import template_rendered
+
+    def captured_templates(app, recorded):
+        def record(sender, template, context):
+            recorded.append((template, context))
+        return template_rendered.connected_to(record, app)
+
+The example above would then look like this::
+
+    templates = []
+    with captured_templates(app, templates):
+        ...
+        template, context = templates[0]
+
+.. admonition:: Blinker API Changes
+
+   The :meth:`~blinker.base.Signal.connected_to` method arrived in Blinker
+   with version 1.1.
 
 Creating Signals
 ----------------
@@ -131,6 +153,18 @@ function, you can pass ``current_app._get_current_object()`` as sender.
    that :data:`~flask.current_app` is a proxy and not the real application
    object.
 
+Decorator Based Signal Subscriptions
+------------------------------------
+
+With Blinker 1.1 you can also easily subscribe to signals by using the new
+:meth:`~blinker.base.NamedSignal.connect_via` decorator::
+
+    from flask import template_rendered
+
+    @template_rendered.connect_via(app)
+    def when_template_rendered(sender, template, context):
+        print 'Template %s is rendered with %s' % (template.name, context)
+
 Core Signals
 ------------
 
@@ -152,8 +186,8 @@ The following signals exist in Flask:
                                 template.name or 'string template',
                                 context)
 
-        from flask import request_started
-        request_started.connect(log_template_renders)
+        from flask import template_rendered
+        template_rendered.connect(log_template_renders, app)
 
 .. data:: flask.request_started
    :noindex:
@@ -169,7 +203,7 @@ The following signals exist in Flask:
             sender.logger.debug('Request context is set up')
 
         from flask import request_started
-        request_started.connect(log_request)
+        request_started.connect(log_request, app)
 
 .. data:: flask.request_finished
    :noindex:
@@ -184,7 +218,7 @@ The following signals exist in Flask:
                                 'Response: %s', response)
 
         from flask import request_finished
-        request_finished.connect(log_response)
+        request_finished.connect(log_response, app)
 
 .. data:: flask.got_request_exception
    :noindex:
@@ -200,6 +234,22 @@ The following signals exist in Flask:
             sender.logger.debug('Got exception during processing: %s', exception)
 
         from flask import got_request_exception
-        got_request_exception.connect(log_exception)
+        got_request_exception.connect(log_exception, app)
+
+.. data:: flask.request_tearing_down
+   :noindex:
+
+   This signal is sent when the request is tearing down.  This is always
+   called, even if an exception is caused.  Currently functions listening
+   to this signal are called after the regular teardown handlers, but this
+   is not something you can rely on.
+
+   Example subscriber::
+
+        def close_db_connection(sender):
+            session.close()
+
+        from flask import request_tearing_down
+        request_tearing_down.connect(close_db_connection, app)
 
 .. _blinker: http://pypi.python.org/pypi/blinker

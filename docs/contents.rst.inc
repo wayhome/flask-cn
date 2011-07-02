@@ -16,6 +16,9 @@
    errorhandling
    config
    signals
+   views
+   reqcontext
+   blueprints
    shell
    patterns/index
    deploying/index

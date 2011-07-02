@@ -67,7 +67,7 @@ First we create the following folder structure::
         setup.py
         LICENSE
 
-Here the contents of the most important files:
+Here's the contents of the most important files:
 
 flaskext/__init__.py
 ````````````````````
@@ -137,7 +137,6 @@ Now this is where your extension code goes.  But how exactly should such
 an extension look like?  What are the best practices?  Continue reading
 for some insight.
 
-
 Initializing Extensions
 -----------------------
 
@@ -153,7 +152,7 @@ There are two recommended ways for an extension to initialize:
 
 initialization functions:
     If your extension is called `helloworld` you might have a function
-    called ``init_helloworld(app[, extra_args])`` that initalizes the
+    called ``init_helloworld(app[, extra_args])`` that initializes the
     extension for that application.  It could attach before / after
     handlers etc.
 
@@ -165,96 +164,154 @@ classes:
     a remote application that uses OAuth.
 
 What to use depends on what you have in mind.  For the SQLite 3 extension
-we will need to use the class based approach because we have to use a
-controller object that can be used to connect to the database.
+we will use the class based approach because it will provide users with a
+manager object that handles opening and closing database connections.
 
 The Extension Code
 ------------------
 
-Here the contents of the `flaskext/sqlite3.py` for copy/paste::
+Here's the contents of the `flaskext/sqlite3.py` for copy/paste::
 
     from __future__ import absolute_import
     import sqlite3
-    from flask import g
+
+    from flask import _request_ctx_stack
 
     class SQLite3(object):
-    
+
         def __init__(self, app):
             self.app = app
             self.app.config.setdefault('SQLITE3_DATABASE', ':memory:')
-
+            self.app.teardown_request(self.teardown_request)
             self.app.before_request(self.before_request)
-            self.app.after_request(self.after_request)
 
         def connect(self):
             return sqlite3.connect(self.app.config['SQLITE3_DATABASE'])
 
         def before_request(self):
-            g.sqlite3_db = self.connect()
+            ctx = _request_ctx_stack.top
+            ctx.sqlite3_db = self.connect()
 
-        def after_request(self, response):
-            g.sqlite3_db.close()
-            return response
+        def teardown_request(self, exception):
+            ctx = _request_ctx_stack.top
+            ctx.sqlite3_db.close()
 
-So here what the lines of code do:
+        def get_db(self):
+            ctx = _request_ctx_stack.top
+            if ctx is not None:
+                return ctx.sqlite3_db
 
-1.  the ``__future__`` import is necessary to activate absolute imports.
-    This is needed because otherwise we could not call our module
-    `sqlite3.py` and import the top-level `sqlite3` module which actually
-    implements the connection to SQLite.
-2.  We create a class for our extension that sets a default configuration
-    for the SQLite 3 database if it's not there (:meth:`dict.setdefault`)
-    and connects two functions as before and after request handlers.
-3.  Then it implements a `connect` function that returns a new database
-    connection and the two handlers.
+So here's what these lines of code do:
 
-So why did we decide on a class based approach here?  Because using that
+1.  The ``__future__`` import is necessary to activate absolute imports.
+    Otherwise we could not call our module `sqlite3.py` and import the
+    top-level `sqlite3` module which actually implements the connection to
+    SQLite.
+2.  We create a class for our extension that requires a supplied `app` object,
+    sets a configuration for the database if it's not there
+    (:meth:`dict.setdefault`), and attaches `before_request` and
+    `teardown_request` handlers.
+3.  Next, we define a `connect` function that opens a database connection.
+4.  Then we set up the request handlers we bound to the app above.  Note here
+    that we're attaching our database connection to the top request context via
+    `_request_ctx_stack.top`. Extensions should use the top context and not the
+    `g` object to store things like database connections.
+5.  Finally, we add a `get_db` function that simplifies access to the context's
+    database.
+
+So why did we decide on a class based approach here?  Because using our
 extension looks something like this::
 
-    from flask import Flask, g
+    from flask import Flask
     from flaskext.sqlite3 import SQLite3
 
     app = Flask(__name__)
     app.config.from_pyfile('the-config.cfg')
-    db = SQLite(app)
+    manager = SQLite3(app)
+    db = manager.get_db()
 
-Either way you can use the database from the views like this::
+You can then use the database from views like this::
 
     @app.route('/')
     def show_all():
-        cur = g.sqlite3_db.cursor()
+        cur = db.cursor()
         cur.execute(...)
 
-But how would you open a database connection from outside a view function?
-This is where the `db` object now comes into play:
+Opening a database connection from outside a view function is simple.
 
 >>> from yourapplication import db
->>> con = db.connect()
->>> cur = con.cursor()
+>>> cur = db.cursor()
+>>> cur.execute(...)
 
-If you don't need that, you can go with initialization functions.
+Adding an `init_app` Function
+-----------------------------
 
-Initialization Functions
-------------------------
+In practice, you'll almost always want to permit users to initialize your
+extension and provide an app object after the fact. This can help avoid
+circular import problems when a user is breaking their app into multiple files.
+Our extension could add an `init_app` function as follows::
 
-Here how the module would look like with initialization functions::
+    class SQLite3(object):
 
-    from __future__ import absolute_import
-    import sqlite3
-    from flask import g
+        def __init__(self, app=None):
+            if app is not None:
+                self.app = app
+                self.init_app(self.app)
+            else:
+                self.app = None
 
-    def init_sqlite3(app):
-        app = app
-        app.config.setdefault('SQLITE3_DATABASE', ':memory:')
+        def init_app(self, app):
+            self.app = app
+            self.app.config.setdefault('SQLITE3_DATABASE', ':memory:')
+            self.app.teardown_request(self.teardown_request)
+            self.app.before_request(self.before_request)
 
-        @app.before_request
-        def before_request():
-            g.sqlite3_db = sqlite3.connect(self.app.config['SQLITE3_DATABASE'])
+        def connect(self):
+            return sqlite3.connect(app.config['SQLITE3_DATABASE'])
 
-        @app.after_request
-        def after_request(response):
-            g.sqlite3_db.close()
-            return response
+        def before_request(self):
+            ctx = _request_ctx_stack.top
+            ctx.sqlite3_db = self.connect()
+
+        def teardown_request(self, exception):
+            ctx = _request_ctx_stack.top
+            ctx.sqlite3_db.close()
+
+        def get_db(self):
+            ctx = _request_ctx_stack.top
+            if ctx is not None:
+                return ctx.sqlite3_db
+
+The user could then initialize the extension in one file::
+
+    manager = SQLite3()
+
+and bind their app to the extension in another file::
+
+    manager.init_app(app)
+
+End-Of-Request Behavior
+-----------------------
+
+Due to the change in Flask 0.7 regarding functions that are run at the end
+of the request your extension will have to be extra careful there if it
+wants to continue to support older versions of Flask.  The following
+pattern is a good way to support both::
+
+    def close_connection(response):
+        ctx = _request_ctx_stack.top
+        ctx.sqlite3_db.close()
+        return response
+
+    if hasattr(app, 'teardown_request'):
+        app.teardown_request(close_connection)
+    else:
+        app.after_request(close_connection)
+
+Strictly speaking the above code is wrong, because teardown functions are
+passed the exception and typically don't return anything.  However because
+the return value is discarded this will just work assuming that the code
+in between does not touch the passed parameter.
 
 Learn from Others
 -----------------
@@ -275,6 +332,48 @@ designing the API.
 
 The best Flask extensions are extensions that share common idioms for the
 API.  And this can only work if collaboration happens early.
+
+Approved Extensions
+-------------------
+
+Flask also has the concept of approved extensions.  Approved extensions
+are tested as part of Flask itself to ensure extensions do not break on
+new releases.  These approved extensions are listed on the `Flask
+Extension Registry`_ and marked appropriately.  If you want your own
+extension to be approved you have to follow these guidelines:
+
+1.  An approved Flask extension must provide exactly one package or module
+    inside the `flaskext` namespace package.
+2.  It must ship a testing suite that can either be invoked with ``make test``
+    or ``python setup.py test``.  For test suites invoked with ``make
+    test`` the extension has to ensure that all dependencies for the test
+    are installed automatically, in case of ``python setup.py test``
+    dependencies for tests alone can be specified in the `setup.py`
+    file.  The test suite also has to be part of the distribution.
+3.  APIs of approved extensions will be checked for the following
+    characteristics:
+
+    -   an approved extension has to support multiple applications
+        running in the same Python process.
+    -   it must be possible to use the factory pattern for creating
+        applications.
+
+4.  The license must be BSD/MIT/WTFPL licensed.
+5.  The naming scheme for official extensions is *Flask-ExtensionName* or
+    *ExtensionName-Flask*.
+6.  Approved extensions must define all their dependencies in the
+    `setup.py` file unless a dependency cannot be met because it is not
+    available on PyPI.
+7.  The extension must have documentation that uses one of the two Flask
+    themes for Sphinx documentation.
+8.  The setup.py description (and thus the PyPI description) has to
+    link to the documentation, website (if there is one) and there
+    must be a link to automatically install the development version
+    (``PackageName==dev``).
+9.  The ``zip_safe`` flag in the setup script must be set to ``False``,
+    even if the extension would be safe for zipping.
+10. An extension currently has to support Python 2.5, 2.6 as well as
+    Python 2.7
 
 
 .. _Flask Extension Wizard:

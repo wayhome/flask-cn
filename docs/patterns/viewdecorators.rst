@@ -8,7 +8,7 @@ functionality to one or more functions.  The :meth:`~flask.Flask.route`
 decorator is the one you probably used already.  But there are use cases
 for implementing your own decorator.  For instance, imagine you have a
 view that should only be used by people that are logged in to.  If a user
-goes to the site and is not logged in, he should be redirected to the
+goes to the site and is not logged in, they should be redirected to the
 login page.  This is a good example of a use case where a decorator is an
 excellent solution.
 
@@ -89,7 +89,7 @@ Here the code::
             return decorated_function
         return decorator
 
-Notice that this assumes an instanciated `cache` object is available, see
+Notice that this assumes an instantiated `cache` object is available, see
 :ref:`caching-pattern` for more information.
 
 
@@ -120,7 +120,9 @@ As you can see, if no template name is provided it will use the endpoint
 of the URL map with dots converted to slashes + ``'.html'``.  Otherwise
 the provided template name is used.  When the decorated function returns,
 the dictionary returned is passed to the template rendering function.  If
-`None` is returned, an empty dictionary is assumed.
+`None` is returned, an empty dictionary is assumed, if something else than
+a dictionary is returned we return it from the function unchanged.  That
+way you can still use the redirect function or return simple strings.
 
 Here the code for that decorator::
 
@@ -138,6 +140,29 @@ Here the code for that decorator::
                 ctx = f(*args, **kwargs)
                 if ctx is None:
                     ctx = {}
+                elif not isinstance(ctx, dict):
+                    return ctx
                 return render_template(template_name, **ctx)
             return decorated_function
         return decorator
+
+
+Endpoint Decorator
+------------------
+
+When you want to use the werkzeug routing system for more flexibility you
+need to map the endpoint as defined in the :class:`~werkzeug.routing.Rule` 
+to a view function. This is possible with this decorator. For example:: 
+
+    from flask import Flask
+    from werkzeug.routing import Rule
+
+    app = Flask(__name__)                                                          
+    app.url_map.add(Rule('/', endpoint='index'))                                   
+
+    @app.endpoint('index')                                                         
+    def my_index():                                                                
+        return "Hello world"     
+
+
+

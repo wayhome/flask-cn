@@ -7,7 +7,7 @@ Using a document database rather than a full DBMS gets more common these days.
 This pattern shows how to use MongoKit, a document mapper library, to
 integrate with MongoDB.
 
-This pattern requires an running MongoDB server and the MongoKit library
+This pattern requires a running MongoDB server and the MongoKit library
 installed.
 
 There are two very common ways to use MongoKit.  I will outline each of them
@@ -78,7 +78,7 @@ validator for the maximum character length and uses a special MongoKit feature
 called `use_dot_notation`.  Per default MongoKit behaves like a python
 dictionary but with `use_dot_notation` set to `True` you can use your
 documents like you use models in nearly any other ORM by using dots to
-seperate between attributes.
+separate between attributes.
 
 You can insert entries into the database like this:
 

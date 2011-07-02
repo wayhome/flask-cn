@@ -5,7 +5,7 @@ Using SQLite 3 with Flask
 
 In Flask you can implement the opening of database connections at the
 beginning of the request and closing at the end with the
-:meth:`~flask.Flask.before_request` and :meth:`~flask.Flask.after_request`
+:meth:`~flask.Flask.before_request` and :meth:`~flask.Flask.teardown_request`
 decorators in combination with the special :class:`~flask.g` object.
 
 So here is a simple example of how you can use SQLite 3 with Flask::
@@ -22,10 +22,34 @@ So here is a simple example of how you can use SQLite 3 with Flask::
     def before_request():
         g.db = connect_db()
 
-    @app.after_request
-    def after_request(response):
+    @app.teardown_request
+    def teardown_request(exception):
         g.db.close()
-        return response
+
+Connect on Demand
+-----------------
+
+The downside of this approach is that this will only work if Flask
+executed the before-request handlers for you.  If you are attempting to
+use the database from a script or the interactive Python shell you would
+have to do something like this::
+
+    with app.test_request_context()
+        app.preprocess_request()
+        # now you can use the g.db object
+
+In order to trigger the execution of the connection code.  You won't be
+able to drop the dependency on the request context this way, but you could
+make it so that the application connects when necessary::
+
+    def get_connection():
+        db = getattr(g, '_db', None)
+        if db is None:
+            db = g._db = connect_db()
+        return db
+
+Downside here is that you have to use ``db = get_connection()`` instead of
+just being able to use ``g.db`` directly.
 
 .. _easy-querying:
 
@@ -61,7 +85,7 @@ Or if you just want a single result::
 
 To pass variable parts to the SQL statement, use a question mark in the
 statement and pass in the arguments as a list.  Never directly add them to
-the SQL statement with string formattings because this makes it possible
+the SQL statement with string formatting because this makes it possible
 to attack the application using `SQL Injections
 <http://en.wikipedia.org/wiki/SQL_injection>`_.
 

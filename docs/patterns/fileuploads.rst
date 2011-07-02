@@ -10,7 +10,7 @@ uploads is actually quite simple.  It basically works like this:
    and an ``<input type=file>`` is placed in that form.
 2. The application accesses the file from the :attr:`~flask.request.files`
    dictionary on the request object.
-3. use the :meth:`~werkzeug.FileStorage.save` method of the file to save
+3. use the :meth:`~werkzeug.datastructures.FileStorage.save` method of the file to save
    the file permanently somewhere on the filesystem.
 
 A Gentle Introduction
@@ -41,9 +41,9 @@ the URL to these files.
 Why do we limit the extensions that are allowed?  You probably don't want
 your users to be able to upload everything there if the server is directly
 sending out the data to the client.  That way you can make sure that users
-are not able to upload HTML files that would cause XSS problems.  Also
-make sure to disallow `.php` files if the server executes them, but who
-has PHP installed on his server, right? :)
+are not able to upload HTML files that would cause XSS problems (see
+:ref:`xss`).  Also make sure to disallow `.php` files if the server
+executes them, but who has PHP installed on his server, right?  :)
 
 Next the functions that check if an extension is valid and that uploads
 the file and redirects the user to the URL for the uploaded file::
@@ -71,7 +71,7 @@ the file and redirects the user to the URL for the uploaded file::
         </form>
         '''
 
-So what does that :func:`~werkzeug.secure_filename` function actually do?
+So what does that :func:`~werkzeug.utils.secure_filename` function actually do?
 Now the problem is that there is that principle called "never trust user
 input".  This is also true for the filename of an uploaded file.  All
 submitted form data can be forged, and filenames can be dangerous.  For
@@ -80,7 +80,7 @@ before storing it directly on the filesystem.
 
 .. admonition:: Information for the Pros
 
-   So you're interested in what that :func:`~werkzeug.secure_filename`
+   So you're interested in what that :func:`~werkzeug.utils.secure_filename`
    function does and what the problem is if you're not using it?  So just
    imagine someone would send the following information as `filename` to
    your application::
@@ -89,7 +89,7 @@ before storing it directly on the filesystem.
 
    Assuming the number of ``../`` is correct and you would join this with
    the `UPLOAD_FOLDER` the user might have the ability to modify a file on
-   the server's filesystem he should not modify.  This does require some
+   the server's filesystem he or she should not modify.  This does require some
    knowledge about how the application looks like, but trust me, hackers
    are patient :)
 
@@ -109,7 +109,7 @@ Flask 0.5 we can use a function that does that for us::
                                    filename)
 
 Alternatively you can register `uploaded_file` as `build_only` rule and
-use the :class:`~werkzeug.SharedDataMiddleware`.  This also works with
+use the :class:`~werkzeug.wsgi.SharedDataMiddleware`.  This also works with
 older versions of Flask::
 
     from werkzeug import SharedDataMiddleware
@@ -155,8 +155,8 @@ Upload Progress Bars
 A while ago many developers had the idea to read the incoming file in
 small chunks and store the upload progress in the database to be able to
 poll the progress with JavaScript from the client.  Long story short: the
-client asks the server every 5 seconds how much he has transmitted
-already.  Do you realize the irony?  The client is asking for something he
+client asks the server every 5 seconds how much it has transmitted
+already.  Do you realize the irony?  The client is asking for something it
 should already know.
 
 Now there are better solutions to that work faster and more reliable.  The
