@@ -1,88 +1,65 @@
 .. _becomingbig:
 
-Becoming Big
+搞大了？！
 ============
 
-Your application is becoming more and more complex?  If you suddenly
-realize that Flask does things in a way that does not work out for your
-application there are ways to deal with that.
+你的应用程序越搞越大越来越复杂了？如果你某天猛然意识到基于这种方式的Flask编程对于
+你的应用程序已经不够给力怎么办？别慌，Flask还是搞得定！
 
-Flask is powered by Werkzeug and Jinja2, two libraries that are in use at
-a number of large websites out there and all Flask does is bring those
-two together.  Being a microframework Flask does not do much more than
-combining existing libraries - there is not a lot of code involved.
-What that means for large applications is that it's very easy to take the
-code from Flask and put it into a new module within the applications and
-expand on that.
+Flask基于Werkzeug和Jinja2技术，这两套类库已经广泛应用于许多正在运行的大型网站系统，
+而Flask则将二者有机的融合在一起。作为一个微型的框架，Flask除了整合已有的类库外其他
+没有瞎掺和 - 代码不是特别多啦。 就是说项目即使搞大了也可以非常方便地将自己的代码抽出
+然后封装到某一个新应用程序的模块里且加以扩展。
 
-Flask is designed to be extended and modified in a couple of different
-ways:
+Flask在设计初时就考虑到了扩展和修改的可能性，可以用下列方法来搞定这个问题：
 
--   Flask extensions.  For a lot of reusable functionality you can create
-    extensions.  For extensions a number of hooks exist throughout Flask
-    with signals and callback functions.
+-   Flask 扩展.  你可以针对大量可重复利用的代码功能进行扩展，之后在整个Flask环境内
+    就会产生很多附带信号和回调功能的钩子可供使用。
 
--   Subclassing.  The majority of functionality can be changed by creating
-    a new subclass of the :class:`~flask.Flask` class and overriding
-    methods provided for this exact purpose.
+-   子类化.  大多数的功能都能通过创建 :class:`~flask.Flask` 的子类和重载
+    针对此目的方法来进行个性改装。
 
--   Forking.  If nothing else works out you can just take the Flask
-    codebase at a given point and copy/paste it into your application
-    and change it.  Flask is designed with that in mind and makes this
-    incredible easy.  You just have to take the package and copy it
-    into your application's code and rename it (for example to
-    `framework`).  Then you can start modifying the code in there.
+-   开分舵.  如果实在没办法搞定你还可以在Flask的代码库的指定的位置选择一些源码(文件)
+    复制/粘贴到你的应用程序(目录)中然后进行修改。Flask在设计时已经考虑到你可能会这么
+    干所以一定会让你干的很爽。你要做的仅仅是选定几个包然后复制到应用程序代码文件（文件夹）
+    里，并且对其重命名（例如`framework`）。然后你可以在那里对代码做进一步的修改。
 
-Why consider Forking?
+干嘛要开分舵?
 ---------------------
 
-The majority of code of Flask is within Werkzeug and Jinja2.  These
-libraries do the majority of the work.  Flask is just the paste that glues
-those together.  For every project there is the point where the underlying
-framework gets in the way (due to assumptions the original developers
-had).  This is natural because if this would not be the case, the
-framework would be a very complex system to begin with which causes a
-steep learning curve and a lot of user frustration.
+Flask的主要代码是由Werkzeug和Jinja2组成的。这两个类库搞定了绝大部分的工作。Flask只是
+负责粘贴并且将二者紧密联系在一起。对于没一个项目来说有这么一个观点，那就是底层框架”卖艺
+不卖身“往往感觉像是个鸡肋（基于假定初始开发人员碰到这个问题）。这样看来允许开分舵形式的产
+生就很自然了，因为如果不这么干，框架就会变得非常复杂很难入手，会造成框架的学习曲线十分陡峭，
+许多使用者信心大减等不和谐的问题。
 
-This is not unique to Flask.  Many people use patched and modified
-versions of their framework to counter shortcomings.  This idea is also
-reflected in the license of Flask.  You don't have to contribute any
-changes back if you decide to modify the framework.
+这个问题不是Flask独有的。许多人通过对它们的框架打补丁或更新版本来弥补不足。这个概念在Flask
+的授权协议里也有体现。你在决定并更改已经属于你应用程序一部分的分舵框架时，无需向我们提交任何
+保护费（信息）。
 
-The downside of forking is of course that Flask extensions will most
-likely break because the new framework has a different import name.
-Furthermore integrating upstream changes can be a complex process,
-depending on the number of changes.  Because of that, forking should be
-the very last resort.
+开分舵当然也有它的缺点，那就是Flask总舵的更新可能会变更导入命名，这样会使得大多数的Flask扩展
+不能使用。此外，与总舵的新版本整合可能是一个非常复杂的过程，这个要根据更新的数量进行估算。总之，
+开分舵应该是最后一招，不得已而为之的。
 
-Scaling like a Pro
+像大师一样游刃有余
 ------------------
 
-For many web applications the complexity of the code is less an issue than
-the scaling for the number of users or data entries expected.  Flask by
-itself is only limited in terms of scaling by your application code, the
-data store you want to use and the Python implementation and webserver you
-are running on.
+对于许多Web应用程序来说，代码的复杂度和处理响应多到爆的用户或数据请求相比，简直是小巫见大巫。
+Flask自身仅根据你的应用程序代码，你使用的数据存储方式，Python的执行效率和你挂载的Web服务器
+的不同而受到限制。
 
-Scaling well means for example that if you double the amount of servers
-you get about twice the performance.  Scaling bad means that if you add a
-new server the application won't perform any better or would not even
-support a second server.
+好的延展性举例说明就是如果你将你的服务器的数量翻倍，你马上获得了双倍的运行表现。相对的，差的
+延展性就是即使你买了新的服务器也不能给你带来什么帮助或者你的应用程序根本不支持多服务器负载。
 
-There is only one limiting factor regarding scaling in Flask which are
-the context local proxies.  They depend on context which in Flask is
-defined as being either a thread, process or greenlet.  If your server
-uses some kind of concurrency that is not based on threads or greenlets,
-Flask will no longer be able to support these global proxies.  However the
-majority of servers are using either threads, greenlets or separate
-processes to achieve concurrency which are all methods well supported by
-the underlying Werkzeug library.
+在Flask只有一个限制因素与延展有关，那就是上下文本地代理（context local proxies）。他们基于
+Flask里那些被定义为线程，进程或者greenlet（python的一个扩展模块）的上下文。如果你的服务器进
+行用某种不是基于线程或者greenlets的并发处理时，Flask不会支持这些全局代理。然而大多数服务器只
+能通过使用线程，greenlet或者独立进程来实现并发，且底层的Werkzeug类库对这些方法都提供了很好
+的支持。
 
-Dialogue with the Community
+通过网络社区进行交流
 ---------------------------
 
-The Flask developers are very interested to keep everybody happy, so as
-soon as you find an obstacle in your way, caused by Flask, don't hesitate
-to contact the developers on the mailinglist or IRC channel.  The best way
-for the Flask and Flask-extension developers to improve it for larger
-applications is getting feedback from users.
+Flask的开发人员一直认为大家开发的爽就是自己爽，所以一旦你碰到任何因为Flask导致的问题，不要憋着，
+通过邮件列表发邮件或者上IRC频道炮轰我们吧。这也是促使编写Flask和Flask扩展的程序员提高，把应用程
+序搞得更大的最佳途径。
