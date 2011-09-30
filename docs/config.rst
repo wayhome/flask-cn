@@ -1,59 +1,54 @@
 .. _config:
 
-Configuration Handling
+配置管理
 ======================
+:译者: G_will@ieqi.com
 
 .. versionadded:: 0.3
 
-Applications need some kind of configuration.  There are different things
-you might want to change like toggling debug mode, the secret key, and a
-lot of very similar things.
+网络应用总是需要一些配置。有些东西你可能需要做一些更改、配置，比如，切换debug模式、变更密钥，还有一些其他类似的东西。
 
-The way Flask is designed usually requires the configuration to be
-available when the application starts up.  You can hardcode the
-configuration in the code, which for many small applications is not
-actually that bad, but there are better ways.
+通常在Flask中，在应用启动的时候就需要载入配置。
+对于一些小的应用，你可以将配置硬编码到网站应用源代码中，不过也有更好的方法。
 
-Independent of how you load your config, there is a config object
-available which holds the loaded configuration values:
-The :attr:`~flask.Flask.config` attribute of the :class:`~flask.Flask`
-object.  This is the place where Flask itself puts certain configuration
-values and also where extensions can put their configuration values.  But
-this is also where you can have your own configuration.
+不同于通常的配置载入方式，在Flask中，有一个现成的保存、载入的对象，
+就是 :class:`~flask.Flask` 类中的 :attr:`~flask.Flask.config` 对象。
+在这个对象中Flask不仅存放自己的配置，还存放拓展插件的配置，而且也存放
+你对于自己应用的自己的配置。
 
-Configuration Basics
+基本配置
 --------------------
 
-The :attr:`~flask.Flask.config` is actually a subclass of a dictionary and
-can be modified just like any dictionary::
+ :attr:`~flask.Flask.config` 实际上继承于字典（dictionary）类型，所以你可以像操作任何字典那样配置它：
+::
 
     app = Flask(__name__)
     app.config['DEBUG'] = True
 
-Certain configuration values are also forwarded to the
-:attr:`~flask.Flask` object so that you can read and write them from
-there::
+配置好的配置参数值也被包含在 :attr:`~flask.Flask` 对象中，
+你可以像这样读取、更改这些配置值：
+::
 
     app.debug = True
 
-To update multiple keys at once you can use the :meth:`dict.update`
-method::
+一次更新多个配置值，你可以使用 :meth:`dict.update` 方法：
+::
 
     app.config.update(
         DEBUG=True,
         SECRET_KEY='...'
     )
 
-Builtin Configuration Values
-----------------------------
+内置配置参数
+-----------------
 
-The following configuration values are used internally by Flask:
+以下配置参数是Flask中默认包含的：
 
 .. tabularcolumns:: |p{6.5cm}|p{8.5cm}|
 
 ================================= =========================================
-``DEBUG``                         enable/disable debug mode
-``TESTING``                       enable/disable testing mode
+``DEBUG``                         开启/关闭 debug 模式
+``TESTING``                       开启/关闭 测试模式
 ``PROPAGATE_EXCEPTIONS``          explicitly enable or disable the
                                   propagation of exceptions.  If not set or
                                   explicitly set to `None` this is
@@ -83,9 +78,9 @@ The following configuration values are used internally by Flask:
                                   returning a 413 status code.
 ================================= =========================================
 
-.. admonition:: More on ``SERVER_NAME``
+.. admonition:: 关于 ``SERVER_NAME``
 
-   The ``SERVER_NAME`` key is used for the subdomain support.  Because
+   ``SERVER_NAME`` 值 is used for the subdomain support.  Because
    Flask cannot guess the subdomain part without the knowledge of the
    actual server name, this is required if you want to work with
    subdomains.  This is also used for the session cookie.
@@ -114,7 +109,7 @@ The following configuration values are used internally by Flask:
 .. versionadded:: 0.7
    ``PROPAGATE_EXCEPTIONS``, ``PRESERVE_CONTEXT_ON_EXCEPTION``
 
-Configuring from Files
+使用配置文件
 ----------------------
 
 Configuration becomes more useful if you can configure from a file, and
@@ -160,7 +155,7 @@ complete reference, read the :class:`~flask.Config` object's
 documentation.
 
 
-Configuration Best Practices
+最佳配置实践
 ----------------------------
 
 The downside with the approach mentioned earlier is that it makes testing
@@ -178,7 +173,7 @@ experience:
     reconfigure the object later on as needed.
 
 
-Development / Production
+开发 / 产品
 ------------------------
 
 Most applications need more than one configuration.  There will at least

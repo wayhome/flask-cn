@@ -49,7 +49,8 @@ Virtualenv来救援！它从根本上实现了多种并排式的python安装。�
 运行上述的命令，记得去掉 `sudo` 前缀。 
 
 一旦你装上了virtualenv，请调出shell然后创建你自己的环境变量。我通常会创建
-一个包含 `env` 文件夹的项目文件夹::
+一个包含 `env` 文件夹的项目文件夹：
+::
 
     $ mkdir myproject
     $ cd myproject
@@ -59,7 +60,8 @@ Virtualenv来救援！它从根本上实现了多种并排式的python安装。�
 
 
 现在，无论何时你想在一个项目上工作，你只需要激活相应的环境。在OS X和Linux上
-，执行以下操作::
+，执行以下操作：
+::
 
     $ . env/bin/activate
 
@@ -82,7 +84,8 @@ Virtualenv来救援！它从根本上实现了多种并排式的python安装。�
 安装到系统全局
 ------------------------
 
-这样也可以，但是我确实不推荐它。只需以root权限运行 `easy_install` :: 
+这样也可以，但是我确实不推荐它。只需以root权限运行 `easy_install` 
+:: 
 
     $ sudo easy_install Flask
 

@@ -1,31 +1,29 @@
-Unicode in Flask
-================
+Flask中的Unicode
+=================
 
-Flask like Jinja2 and Werkzeug is totally Unicode based when it comes to
-text.  Not only these libraries, also the majority of web related Python
-libraries that deal with text.  If you don't know Unicode so far, you
-should probably read `The Absolute Minimum Every Software Developer
+Flask就像Jinja2和Werkzeug那样，是完全基于Unicode的。
+不只是这几个库，绝大多数的Python中网络相关的库都是这样处理文本的。
+如果你对Unicode还不够了解，你可以阅读这篇文章 `The Absolute Minimum Every Software Developer
 Absolutely, Positively Must Know About Unicode and Character Sets
-<http://www.joelonsoftware.com/articles/Unicode.html>`_.  This part of the
-documentation just tries to cover the very basics so that you have a
-pleasant experience with Unicode related things.
+<http://www.joelonsoftware.com/articles/Unicode.html>`_ 。
+这部分文档只是希望能帮助你了解一些基础知识，这样你就可以处理一些与Unicode有关的东西了。
 
-Automatic Conversion
+自动转换
 --------------------
 
-Flask has a few assumptions about your application (which you can change
-of course) that give you basic and painless Unicode support:
+Flask默认基于以下一些假设（当然，你可以更改），给予你一些基础的、简单的Unicode支持：
 
--   the encoding for text on your website is UTF-8
--   internally you will always use Unicode exclusively for text except
-    for literal strings with only ASCII character points.
--   encoding and decoding happens whenever you are talking over a protocol
-    that requires bytes to be transmitted.
+-   你的网站的源代码使用的是UTF-8编码。
+-   在程序内部你将始终使用Unicode，除非对于只有ASCII编码的字符的字符串。
+-   编码、解码只会发生在你需要用某种协议传输字节（bytes）形式的数据。    
 
-So what does this mean to you?
+这对于你有什么用呢？
 
-HTTP is based on bytes.  Not only the protocol, also the system used to
-address documents on servers (so called URIs or URLs).  However HTML which
+HTTP协议基于字节码（bytes）。
+不仅是协议，
+也用于标记文件在服务器位置（即URI、URL）的系统中。
+
+However HTML which
 is usually transmitted on top of HTTP supports a large variety of
 character sets and which ones are used, are transmitted in an HTTP header.
 To not make this too complex Flask just assumes that if you are sending
