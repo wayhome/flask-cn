@@ -1,36 +1,53 @@
-
                           // Flask //
 
-         因为有些时候一把小刀还不够
+              web development, one drop at a time
+                      Web 开发，一点一滴
 
 
     ~ 什么是Flask?
+      
+      Flask是Python环境下的一个基于Werkzeug和Jinja2的微型网络应用框架。
+      Flask凝结着我们最强烈的意向，它适合小规模的网络应用程序。
 
-      Flask是一个基于Werkzeug和Jinja2的Python微型框架.它基于我们心目中最好的意图开发，
-      适用于小规模的应用.
+    ~ Flask准备好了吗?
+      
+      Flask还没有到1.0版，但是已经被塑造的很好，而且被广泛应用了。
+      未来，API也许会有一些小的变动，但是我们不会去阻止这些变动。
 
+    ~ 我需要准备些什么?
 
-    ~ 它是完善的吗?
+      Jinja 2.4 和 Werkzeug 0.6.1.  
+      如果你希望通过 `easy_install Flask` 来安装Flask，
+      那么你需要先安装 `pip` 或者 `easy_install` 。
+      我们建议使用一个虚拟环境（virtualenv）。
+      更多细节请查阅文档中有关Flask安装以及使用说明的部分。
 
-      A preview release is out now, and I'm hoping for some
-      input about what you want from a microframework and
-      how it should look like.  Consider the API to slightly
-      improve over time.
+    ~ 文档在哪里？
 
-    ~ 我需要些什么?
+      浏览 http://flask.pocoo.org/docs/ 
+      你将会看到一个还未编译成册的最新版本的在线文档。
+      当然，你也可以自己利用文档的Sphinx源代码（ReST）生产其他格式的文档。
 
-      Jinja 2.4 and Werkzeug 0.6.1.  `easy_install` will
-      install them for you if you do `easy_install Flask==dev`.
-      I encourage you to use a virtualenv.  Check the docs for
-      complete installation and usage instructions.
+    ~ 如何测试Flask程序？
 
-    ~ 文档在哪里?
+      问的非常好。
+      测试程序在 flask/testsuite 包中。
+      可以用 `run-tests.py` 文件运行测试：
+      
+        $ python run-tests.py
+      
+      如果还不能获得足够的输出信息，
+      那么你可以使用 `--verbose` 参数：
 
-      Go to http://flask.pocoo.org/ for a prebuilt version of
-      the current documentation.  Otherwise build them yourself
-      from the sphinx sources in the docs folder.
+        $ python run-tests.py --verbose
 
-    ~ 我在哪里可以得到帮助?
+      如果你只想运行一个测试用例，
+      那么你可以在命令行中这样输入：
 
-      Either use the #pocoo IRC channel on irc.freenode.net or
-      ask on the mailinglist: http://flask.pocoo.org/mailinglist/
+        $ python run-tests.py test_to_run
+
+    ~ 我可以从哪里获得帮助？
+      
+      可以通过 #pocoo IRC 频道（irc.freenode.net）
+      或者在邮件列表中提问，
+      邮件列表地址： http://flask.pocoo.org/mailinglist/
