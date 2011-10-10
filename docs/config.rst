@@ -4,14 +4,16 @@
 ======================
 :译者: G_will@ieqi.com
 
-网络应用总是需要一些配置。有些东西你可能需要做一些更改、配置，比如，切换debug模式、变更密钥，还有一些其他类似的东西。
+网络应用总是需要一些配置。\
+有些东西你可能需要做一些更改、配置，\
+比如，切换debug模式、变更密钥，还有一些其他类似的东西。
 
-通常在Flask中，在应用启动的时候就需要载入配置。
+通常在Flask中，在应用启动的时候就需要载入配置。\
 对于一些小的应用，你可以将配置硬编码到网站应用源代码中，不过也有更好的方法。
 
-不同于通常的配置载入方式，在Flask中，有一个现成的保存、载入的对象，
-就是 :class:`~flask.Flask` 类中的 :attr:`~flask.Flask.config` 对象。
-在这个对象中Flask不仅存放自己的配置，还存放拓展插件的配置，而且也存放
+不同于通常的配置载入方式，在Flask中，有一个现成的保存、载入的对象，\
+就是 :class:`~flask.Flask` 类中的 :attr:`~flask.Flask.config` 对象。\
+在这个对象中Flask不仅存放自己的配置，还存放拓展插件的配置，而且也存放\
 你对于自己应用的自己的配置。
 
 基本配置
@@ -23,7 +25,7 @@
     app = Flask(__name__)
     app.config['DEBUG'] = True
 
-配置好的配置参数值也被包含在 :attr:`~flask.Flask` 对象中，
+配置好的配置参数值也被包含在 :attr:`~flask.Flask` 对象中，\
 你可以像这样读取、更改这些配置值：
 ::
 
@@ -44,44 +46,41 @@
 
 .. tabularcolumns:: |p{6.5cm}|p{8.5cm}|
 
-================================= =========================================
+================================= ==========================================
 ``DEBUG``                         开启/关闭 debug 模式
 ``TESTING``                       开启/关闭 测试模式
-``PROPAGATE_EXCEPTIONS``          explicitly enable or disable the
-                                  propagation of exceptions.  If not set or
-                                  explicitly set to `None` this is
-                                  implicitly true if either `TESTING` or
-                                  `DEBUG` is true.
-``PRESERVE_CONTEXT_ON_EXCEPTION`` By default if the application is in
-                                  debug mode the request context is not
-                                  popped on exceptions to enable debuggers
-                                  to introspect the data.  This can be
-                                  disabled by this key.  You can also use
-                                  this setting to force-enable it for non
-                                  debug execution which might be useful to
-                                  debug production applications (but also
-                                  very risky).
-``SECRET_KEY``                    the secret key
-``SESSION_COOKIE_NAME``           the name of the session cookie
-``PERMANENT_SESSION_LIFETIME``    the lifetime of a permanent session as
-                                  :class:`datetime.timedelta` object.
-``USE_X_SENDFILE``                enable/disable x-sendfile
-``LOGGER_NAME``                   the name of the logger
-``SERVER_NAME``                   the name and port number of the server.
-                                  Required for subdomain support (e.g.:
-                                  ``'localhost:5000'``)
-``MAX_CONTENT_LENGTH``            If set to a value in bytes, Flask will
-                                  reject incoming requests with a
-                                  content length greater than this by
-                                  returning a 413 status code.
-================================= =========================================
+``PROPAGATE_EXCEPTIONS``          开启/关闭 异常通知
+ 
+                                  当测试或DEBUG模式开启时，\
+                                  不管这个值没有设定或者设定为 `None` \
+                                  ，程序都会按这个值为 `True` 的情况执行。
+``PRESERVE_CONTEXT_ON_EXCEPTION`` 默认情况下，在debug模式中关于异常的详细\
+                                  请求信息不会被显示用以方便查看细节数据。\
+                                  您可以利用这个配置键打开这个功能。\
+                                  您也可以强制使用这个配置开启在非debug\
+                                  模式中，这对用于生产环境的应用会很有\
+                                  帮助，但是也存在着非常大的风险。
+``SECRET_KEY``                    配置程序密钥
+``SESSION_COOKIE_NAME``           配置Session Cookie的变量名
+``PERMANENT_SESSION_LIFETIME``    配置常驻session对象\
+                                  （ :class:`datetime.timedelta` ）\
+                                  的保存时长。
+``USE_X_SENDFILE``                开启/关闭 x-sendfile
+``LOGGER_NAME``                   配置logger的名字
+``SERVER_NAME``                   配置服务器的名字和端口号。\
+                                  用于对于子域名的支持。\
+                                  （例子： ``'localhost:5000'`` ）
+``MAX_CONTENT_LENGTH``            配置最大请求内容长度。\
+                                  如果提交的内容的字节长度大于此值\
+                                  Flask将会拒绝请求，并且返回413状态码。
+================================= ==========================================
 
 .. admonition:: 关于 ``SERVER_NAME``
 
-   ``SERVER_NAME`` 值 is used for the subdomain support.  Because
-   Flask cannot guess the subdomain part without the knowledge of the
-   actual server name, this is required if you want to work with
-   subdomains.  This is also used for the session cookie.
+   ``SERVER_NAME`` 值用于对于子域名的支持。\
+   因为，在没有获取真实Server Name的情况下，Flask不获取得到子域名。\
+   所以当你需要使用子域名的时候需要配置 ``SERVER_NAME`` 。\ 
+   这个值也会被session cookie用到。
 
    Please keep in mind that not only Flask has the problem of not knowing
    what subdomains are, your web browser does as well.  Most modern web
@@ -214,8 +213,8 @@ configuration::
     class TestingConfig(Config):
         TESTING = True
 
-To enable such a config you just have to call into
-:meth:`~flask.Config.from_object`::
+开启这个配置你需要调用 :meth:`~flask.Config.from_object` ：
+::
 
     app.config.from_object('configmodule.ProductionConfig')
 
