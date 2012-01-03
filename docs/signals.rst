@@ -1,6 +1,6 @@
 .. _signals:
 
-Signals
+Signals 信号
 =======
 
 .. versionadded:: 0.6
@@ -9,10 +9,16 @@ Starting with Flask 0.6, there is integrated support for signalling in
 Flask.  This support is provided by the excellent `blinker`_ library and
 will gracefully fall back if it is not available.
 
+在Flask 0.6版本加入了对信号的支持。该项功能由`blinker`库提供支持，如果没有安装该库
+程序将不做任何处理。
+
 What are signals?  Signals help you decouple applications by sending
 notifications when actions occur elsewhere in the core framework or
 another Flask extensions.  In short, signals allow certain senders to
 notify subscribers that something happened.
+
+信号是什么呢？信号可以帮助你通过发送提醒的方式在当核心框架或其他Flask插件进行某个动作时，
+进行一些操作。简单来说，信号可以允许发送端在某件事情发生时通知到它的订阅端。
 
 Flask comes with a couple of signals and other extensions might provide
 more.  Also keep in mind that signals are intended to notify subscribers
@@ -25,11 +31,22 @@ example is executed in a specific order and is able to abort the request
 early by returning a response.  In contrast all signal handlers are
 executed in undefined order and do not modify any data.
 
+Flask在一些地方就使用了信号并且在其他的扩展中信号可能被更多的应用。必须牢记的是信号是
+用来提醒它的订阅端的但是不建议订阅端去改变数据本身。你会注意到信号和python内置的装饰器
+有很多类似的地方（例如: :data:`~flask.request_started`与:meth:`~flask.Flask.before_request`看上去十分相识）。但它们的运作方式有所不同。
+:meth:`~flask.Flask.before_request`的处理器是按照特定的顺序执行的并且可以在处理
+请求时提前返回结果。但是所有的信号处理器是没有特定的执行顺序的而起它们也不会修改任何的
+数据。
+
 The big advantage of signals over handlers is that you can safely
 subscribe to them for the split of a second.  These temporary
 subscriptions are helpful for unittesting for example.  Say you want to
 know what templates were rendered as part of a request: signals allow you
 to do exactly that.
+
+与普通的处理器相比信号最大的好处在于你可以快速安全的订阅他们，这种临时的订阅方式
+对于单元测试十分有用，例如当你想知道请求将调用哪个模板进行渲染时，通过信号机制你可以获
+得你需要的答案。
 
 Subscribing to Signals
 ----------------------
