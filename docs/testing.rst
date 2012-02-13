@@ -6,19 +6,14 @@
 
    **物未测，必有漏。**
 
-这句话其实是我瞎掰的说的不一定对, 不过也没有很超过。未经测试的应用程序的代码很难进行改进，且程序员
-经常在未经测试的应用程序上面搞很容易抓狂。如果这个应用程序可以自动测试，你就可以安全的作更改且马上
-可以知道哪里出了问题。
+这句话其实是我瞎掰的说的不一定对, 不过也没有很超过。未经测试的应用程序的代码很难进行改进，且程序员经常在未经测试的应用程序上面搞很容易抓狂。如果这个应用程序可以自动测试，你就可以安全的作更改且马上可以知道哪里出了问题。
 
-Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (客户端)且同时处理本地上下文的方法来
-替你测试你的应用程序。然后你可以将其应用在你喜欢的测试方式里。在这个文档里，我们将使用 :mod:`unittest` 
-包，这个包是随着Python一起已经预安装好的。
+Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (客户端)且同时处理本地上下文的方法来替你测试你的应用程序。然后你可以将其应用在你喜欢的测试方式里。在这个文档里，我们将使用 :mod:`unittest` 包，这个包是随着Python一起已经预安装好的。
 
 要先有应用程序
 ---------------
 
-首先，我们需要一个应用程序来进行测试；我们将使用 :ref:`tutorial` 作为我们的测试项目。如果你还没有
-的话，你可以在 `示例项目`_ 里获取代码。
+首先，我们需要一个应用程序来进行测试；我们将使用 :ref:`tutorial` 作为我们的测试项目。如果你还没有的话，你可以在 `示例项目`_ 里获取代码。
 
 .. _示例项目:
    http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/
@@ -26,8 +21,7 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
 测试骨架
 --------------------
 
-为了测试这个项目，我们要新增一个模块 (`flaskr_tests.py`) 。 
-且在那里建立一个 unittest 的骨架::
+为了测试这个项目，我们要新增一个模块 (`flaskr_tests.py`) 。 且在那里建立一个 unittest 的骨架::
 
     import os
     import flaskr
@@ -89,8 +83,7 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
 注意我们的测试方法是以 `test` 开头的；这会让 :mod:`unittest` 模块自动将此方法作为测试方法来执行。
 
 通过使用 `self.app.get` 我们可以把一个HTTP `GET` 请求通过给定的路径发送到应用程序。返回值是一个  :class:`~flask.Flask.response_class` 对象。
-我们现在可以用 :attr:`~werkzeug.wrappers.BaseResponse.data` 属性来对应用程序进行核查。对应这个
-例子，我们需要核查 ``'No entries here so far'`` 是输出结果的一部分。
+我们现在可以用 :attr:`~werkzeug.wrappers.BaseResponse.data` 属性来对应用程序进行核查。对应这个例子，我们需要核查 ``'No entries here so far'`` 是输出结果的一部分。
 
 再将它执行一次你应该可以看到一次成功的测试结果::
 
@@ -104,9 +97,7 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
 日志的输入输出
 ------------------
 
-关于这个应用程序，其绝大部分功能是供给管理员使用的，所以我们需要一个途径来记录应用程序运行。为了达到这个
-目的，我们向登录和登出页面发送了一些带有表单数据（用户名和密码）的请求。由于登录登出请求会跳转页面，所以
-我们告诉客户端要它 `follow_redirects` （跟踪跳转）。
+关于这个应用程序，其绝大部分功能是供给管理员使用的，所以我们需要一个途径来记录应用程序运行。为了达到这个目的，我们向登录和登出页面发送了一些带有表单数据（用户名和密码）的请求。由于登录登出请求会跳转页面，所以我们告诉客户端要它 `follow_redirects` （跟踪跳转）。
 
 在你的 `FlaskrTestCase` 类里添加如下两个方法::
 
@@ -157,8 +148,7 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
 
     OK
 
-对于那些更复杂的注入带有头和状态代码的测试，你可以在Flask的源码包里找到
-`MiniTwit Example`_ 项目，里面有更多更大型的测试用例。
+对于那些更复杂的注入带有头和状态代码的测试，你可以在Flask的源码包里找到`MiniTwit Example`_ 项目，里面有更多更大型的测试用例。
 
 
 .. _MiniTwit Example:
@@ -168,9 +158,7 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
 其他测试技巧
 --------------------
 
-除了使用上述的测试客户端意外，还可以通过使用方法 :meth:`~flask.Flask.test_request_context` 
-，将其和 `with` 语句组合可以产生一个临时的请求上下文。通过此功能你可以像在视图功能里一样访问这些类 :class:`~flask.request`,
-:class:`~flask.g` 和 :class:`~flask.session` 。这里有一个使用此方法的完整例子::
+除了使用上述的测试客户端意外，还可以通过使用方法 :meth:`~flask.Flask.test_request_context` ，将其和 `with` 语句组合可以产生一个临时的请求上下文。通过此功能你可以像在视图功能里一样访问这些类 :class:`~flask.request`,:class:`~flask.g` 和 :class:`~flask.session` 。这里有一个使用此方法的完整例子::
 
     app = flask.Flask(__name__)
 
@@ -180,14 +168,9 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
 
 所有其他上下文约束的对象都可以使用相同的方法。
 
-如果你想要在不同的配置环境下测试应用程序，看起来好像没有什么好办法，可以考虑切换到应用程序工厂模式，
-(可查阅 :ref:`app-factories`).
+如果你想要在不同的配置环境下测试应用程序，看起来好像没有什么好办法，可以考虑切换到应用程序工厂模式，(可查阅 :ref:`app-factories`).
 
-注意不管你是否使用测试请求上下文，方法 :meth:`~flask.Flask.before_request` 在方法
-:meth:`~flask.Flask.after_request` 被执行之前不一定会被执行。然而方法
-:meth:`~flask.Flask.teardown_request` 在测试方法离开 `with` 语块时一定会被执行。  如果你
-确实希望方法 :meth:`~flask.Flask.before_request` 也被执行的话, 你需要自行调用
-:meth:`~flask.Flask.preprocess_request` 方法::
+注意不管你是否使用测试请求上下文，方法 :meth:`~flask.Flask.before_request` 在方法:meth:`~flask.Flask.after_request` 被执行之前不一定会被执行。然而方法:meth:`~flask.Flask.teardown_request` 在测试方法离开 `with` 语块时一定会被执行。  如果你确实希望方法 :meth:`~flask.Flask.before_request` 也被执行的话, 你需要自行调用:meth:`~flask.Flask.preprocess_request` 方法::
 
     app = flask.Flask(__name__)
 
@@ -202,9 +185,7 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
 
 .. versionadded:: 0.4
 
-有时候我们需要触发一个常规的请求后将上下文现场保持一个较长的时间，以便于触发更多的内部检查。 
-有了 Flask 0.4 或以上版本，通过使用方法 :meth:`~flask.Flask.test_client` 
-并加上 `with` 语块就可以做到了::
+有时候我们需要触发一个常规的请求后将上下文现场保持一个较长的时间，以便于触发更多的内部检查。 有了 Flask 0.4 或以上版本，通过使用方法 :meth:`~flask.Flask.test_client` 并加上 `with` 语块就可以做到了::
 
     app = flask.Flask(__name__)
 
@@ -212,7 +193,4 @@ Flask提供了一种通过暴露Wekzeug测试 :class:`~werkzeug.test.Client` (�
         rv = c.get('/?tequila=42')
         assert request.args['tequila'] == '42'
 
-如果你使用了方法 :meth:`~flask.Flask.test_client` 但是没有加上 `with` 语块, `assert` 语句会报错。
-这是因为这里的 `request` 不可用 (因为此操作在在实际请求之外).
-不管如何, 记住任何 :meth:`~flask.Flask.after_request` 方法在此时已经被执行，所以你的数据库连接和
-其他所有操作可能已经被关闭了。
+如果你使用了方法 :meth:`~flask.Flask.test_client` 但是没有加上 `with` 语块, `assert` 语句会报错。这是因为这里的 `request` 不可用 (因为此操作在实际请求之外).不管如何, 记住任何 :meth:`~flask.Flask.after_request` 方法在此时已经执行，所以你的数据库连接和其他所有操作可能已经被关闭了。
