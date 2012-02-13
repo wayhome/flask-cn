@@ -7,7 +7,7 @@ mod_wsgi (Apache)
 
 .. admonition:: 注意
 
-   请事先确认你应用程序内的所有 ``app.run()`` 调用包含在 ``if __name__ ==  '__main__':`` 区块内或在一个单独的文件里。 要确认这个的原因是这句语句执行后总是会启动一个新的本地WSGI服务器，但在部署到mod_wsgi的环境中，我们不需要它。 
+   请事先确认你应用程序内的所有 ``app.run()`` 调用包含在 ``if __name__ ==  '__main__':`` 区块内或在一个单独的文件里。 要确认这个的原因是因为这句语句执行后总是会启动一个新的本地WSGI服务器，但在部署到mod_wsgi的环境中，我们不需要它。 
 
 .. _Apache: http://httpd.apache.org/
 
@@ -32,7 +32,7 @@ mod_wsgi (Apache)
 
 如果在第一次apache重启后出现segfaulting child processes（子进程段错误），你可以直接的无视。再重启一下即可。
 
-Creating a `.wsgi` file
+创建一个 `.wsgi` 文件
 -----------------------
 
 要运行你的应用程序，你需要一个 `yourapplication.wsgi` 文件。这个文件包含 `mod_wsgi` 在启动时需要执行的获取应用程序对象的代码。该对象在那个文件里调用了 `application` 然后就会把它当作应用程序来处理了。
@@ -43,7 +43,7 @@ Creating a `.wsgi` file
 
 如果你没有创建应用程序对象的工厂方法，只有一个单独的实例，你可以直接将其作为 `application` 直接import（导入）。
 
-找一个地方把这个文件放好，以便于你可以再次找到它 (举例:`/var/www/yourapplication`) 并且确认 `yourapplication` 以及所有你已经使用到的类库在python可以读取的路径内。如果你不希望整个系统使用同一个运行环境，你可以考虑创建一个 `虚拟 python`_环境。
+找一个地方把这个文件放好，以便于你可以再次找到它 (举例:`/var/www/yourapplication`) 并且确认 `yourapplication` 以及所有你已经使用到的类库在python可以读取的路径内。如果你不希望整个系统使用同一个运行环境，你可以考虑创建一个 `虚拟 python`_ 环境。
 
 配置 Apache
 ------------------
@@ -79,14 +79,13 @@ Creating a `.wsgi` file
 如果你的应用程序没有运行，请跟着以下步骤来排错:
 
 **问题:** 应用程序没有运行，错误日志显示SystemExit ignored
-    在你的应用程序文件里有某处调用了 ``app.run()`` ，但是没有包含 ``if __name__ == '__main__':`` 条件内。你可以将这个文件里的调用方法移到一个单独的 `run.py` 文件或者给它加上一个if语块。
+    在你的应用程序文件里有某处调用了 ``app.run()`` ，但是没有包含在 ``if __name__ == '__main__':`` 条件内。你可以将这个文件里的调用方法移到一个单独的 `run.py` 文件或者给它加上一个if语块。
 
 **问题:** 应用程序抛出permission（许可）错误
-    这个可能是由于运行你的应用程序的用户不正确。请确认应用程序所在目录的用户访问权限使应用程序获得所需的执行条件，且再次确认实际用户与配置用户是否一致。
-    (确认`WSGIDaemonProcess`命令的``用户`` 和 ``组`` 参数)
+    这个可能是由于运行你的应用程序的用户不正确。请确认应用程序所在目录的用户访问权限使应用程序获得所需的执行条件，且再次确认实际用户与配置用户是否一致。(确认 `WSGIDaemonProcess` 命令的 ``用户`` 和 ``组`` 参数)
 
 **问题:** 应用程序挂了并且输出了错误信息
-    请记住 mod_wsgi 不允许做任何的 :data:`sys.stdout` 和 :data:`sys.stderr` 操作。你可以配置文件里设置`WSGIRestrictStdout`的值为``off``来禁用该保护：
+    请记住 mod_wsgi 不允许做任何的 :data:`sys.stdout` 和 :data:`sys.stderr` 操作。你可以配置文件里设置 `WSGIRestrictStdout` 的值为 ``off`` 来禁用该保护：
 
     .. sourcecode:: apache
 
