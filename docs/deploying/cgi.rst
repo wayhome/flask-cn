@@ -1,26 +1,19 @@
 CGI
 ===
 
-If all other deployment methods do not work, CGI will work for sure.
-CGI is supported by all major servers but usually has a sub-optimal
-performance.
+即使所有其他的部署方法都不行，CGI一定行！
+所有主流的服务器都支持CGI，只不过这个不是首选的解决方案。 
 
-This is also the way you can use a Flask application on Google's `App
-Engine`_, where execution happens in a CGI-like environment.
+这也是一种将你的Flask应用架设在Google的 `App Engine`_ 上的一种方法，或者其他任何和CGI类似的环境下。
 
-.. admonition:: Watch Out
+.. admonition:: 注意
 
-   Please make sure in advance that any ``app.run()`` calls you might
-   have in your application file are inside an ``if __name__ ==
-   '__main__':`` block or moved to a separate file.  Just make sure it's
-   not called because this will always start a local WSGI server which
-   we do not want if we deploy that application to CGI / app engine.
+   请事先确认你应用程序内的所有 ``app.run()`` 调用包含在 ``if __name__ ==  '__main__':`` 区块内或在一个单独的文件里。 要确认这个的原因是因为这句语句执行后总是会启动一个新的本地WSGI服务器，但在部署到CGI / app的环境中，我们不需要它。 
 
-Creating a `.cgi` file
+创建一个 `.cgi` 文件
 ----------------------
 
-First you need to create the CGI application file.  Let's call it
-`yourapplication.cgi`::
+首先你要创建一个CGI应用文件。我们先给它起个名字，就叫它 `yourapplication.cgi`::
 
     #!/usr/bin/python
     from wsgiref.handlers import CGIHandler
@@ -28,19 +21,17 @@ First you need to create the CGI application file.  Let's call it
 
     CGIHandler().run(app)
 
-Server Setup
+服务器设置
 ------------
 
-Usually there are two ways to configure the server.  Either just copy the
-`.cgi` into a `cgi-bin` (and use `mod_rewrite` or something similar to
-rewrite the URL) or let the server point to the file directly.
+配置服务器通常有两种方法。直接将 `.cgi` 文件拷贝到一个 `cgi-bin` （并且使用 `mod_rewrite` 或者其他类似的东西来重写URL）或者将服务器直接指向文件。
 
-In Apache for example you can put a like like this into the config:
+例如在Apache环境下，你可以在配置文件内加入以下内容:
 
 .. sourcecode:: apache
 
     ScriptAlias /app /path/to/the/application.cgi
 
-For more information consult the documentation of your webserver.
+如你需要更多的信息请参考你使用的web服务器的文档。
 
 .. _App Engine: http://code.google.com/appengine/

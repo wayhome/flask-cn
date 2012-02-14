@@ -1,20 +1,14 @@
 .. _deploying-other-servers:
 
-Other Servers
+其他服务器
 =============
 
-There are popular servers written in Python that allow the execution of WSGI
-applications as well.  These servers stand alone when they run; you can proxy
-to them from your web server.
+现在还有许多十分流行的由Python编写的服务器可以执行WSGI应用。这些服务器在执行时会独立运行；你可以在你的web服务器上设置反向代理来使用它们。
 
 Tornado
 --------
 
-`Tornado`_ is an open source version of the scalable, non-blocking web
-server and tools that power `FriendFeed`_.  Because it is non-blocking and
-uses epoll, it can handle thousands of simultaneous standing connections,
-which means it is ideal for real-time web services.  Integrating this
-service with Flask is a trivial task::
+`Tornado`_ 是一个可扩展的，non-blocking（非阻塞）的开源服务器和工具，且提供了 `FriendFeed`_ 。因为它是non-blocking的且使用了epoll，它可以同时处理几千个连接，这意味着它是一个理想的实时web服务器。将它与Flask集成更是小菜一碟::
 
     from tornado.wsgi import WSGIContainer
     from tornado.httpserver import HTTPServer
@@ -32,9 +26,7 @@ service with Flask is a trivial task::
 Gevent
 -------
 
-`Gevent`_ is a coroutine-based Python networking library that uses
-`greenlet`_ to provide a high-level synchronous API on top of `libevent`_
-event loop::
+`Gevent`_ 是一个基于协程的Python网络类库，它使用了 `greenlet`_ 来提供在 `libevent`_ 事件循环顶端的高级别异步API::
 
     from gevent.wsgi import WSGIServer
     from yourapplication import app
@@ -49,15 +41,11 @@ event loop::
 Gunicorn
 --------
 
-`Gunicorn`_ 'Green Unicorn' is a WSGI HTTP Server for UNIX. It's a pre-fork
-worker model ported from Ruby's Unicorn project. It supports both `eventlet`_
-and `greenlet`_. Running a Flask application on this server is quite simple::
+`Gunicorn`_ 'Green Unicorn' 是一个UNIX下的WSGI HTTP服务器。它是一个早期从Ruby的Unicorn项目分流出来的项目。它同时支持 `eventlet`_ 和 `greenlet`_ 。在该服务器上运行Flask应用也是非常简单的::
 
     gunicorn myproject:app
 
-`Gunicorn`_ provides many command-line options -- see ``gunicorn -h``.
-For example, to run a Flask application with 4 worker processes (``-w
-4``) binding to localhost port 4000 (``-b 127.0.0.1:4000``)::
+`Gunicorn`_ 提供了许多命令行的操作方式 -- 请查看 ``gunicorn -h`` 。举个例子，使用4个工作进程来执行Flask应用 (``-w4``) 绑定在localhost的4000端口上 (``-b 127.0.0.1:4000``)::
 
     gunicorn -w 4 -b 127.0.0.1:4000 myproject:app
 
@@ -65,28 +53,19 @@ For example, to run a Flask application with 4 worker processes (``-w
 .. _eventlet: http://eventlet.net/
 .. _greenlet: http://codespeak.net/py/0.9.2/greenlet.html
 
-Proxy Setups
+反向代理设置
 ------------
 
-If you deploy your application using one of these servers behind an HTTP
-proxy you will need to rewrite a few headers in order for the
-application to work.  The two problematic values in the WSGI environment
-usually are `REMOTE_ADDR` and `HTTP_HOST`.  Werkzeug ships a fixer that
-will solve some common setups, but you might want to write your own WSGI
-middleware for specific setups.
+如果你将你的应用部署在上述其中一个服务器上且放置在某个已设置反向代理的HTTP服务器后面，你需要重写一些头来让你的应用正常工作。通常在WSGI环境下会导致问题产生的值是 `REMOTE_ADDR` 和 `HTTP_HOST` 。Werkzeug已经搭载了一些常见设置的解决方法，但是你可能希望为某些特殊的情况自己写WSGI中间件。
 
-The most common setup invokes the host being set from `X-Forwarded-Host`
-and the remote address from `X-Forwarded-For`::
+这种情况下一般要设定的值是 `X-Forwarded-Host` 转发到哪里和 `X-Forwarded-For` 从哪里转发的::
 
     from werkzeug.contrib.fixers import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
-Please keep in mind that it is a security issue to use such a middleware
-in a non-proxy setup because it will blindly trust the incoming
-headers which might be forged by malicious clients.
+请记住在无反向代理的设置下使用这样一个中间件会造成一定的安全隐患，因为会信任那些可能由恶意用户伪造传入的头。
 
-If you want to rewrite the headers from another header, you might want to
-use a fixer like this::
+如果你需要重写头，你可能需要使用如下方法::
 
     class CustomProxyFix(object):
 
