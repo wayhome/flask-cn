@@ -1,6 +1,6 @@
 .. _deployment:
 
-部署途径
+部署方式
 ==================
 :译者: fermin.yang#gmail.com
 
