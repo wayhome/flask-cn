@@ -1,30 +1,21 @@
 .. _app-factories:
 
-Application Factories
+应用程序的工厂模式
 =====================
 
-If you are already using packages and blueprints for your application
-(:ref:`blueprints`) there are a couple of really nice ways to further improve
-the experience.  A common pattern is creating the application object when
-the blueprint is imported.  But if you move the creation of this object,
-into a function, you can then create multiple instances of this and later.
+如果你已经在你的应用里使用了包和蓝图 (:ref:`blueprints`) 的话，实际上还有许多种非常好的方法让你更爽。一般的做法是在import蓝图后紧接着创建应用程序对象。但是如果将应用程序对象创建过程移到某个方法内，那么你就可以随时地创建应用程序对象的各种实例了。
 
-So why would you want to do this?
+你估计会问，为什么我要这么干？
 
-1.  Testing.  You can have instances of the application with different
-    settings to test every case.
-2.  Multiple instances.  Imagine you want to run different versions of the
-    same application.  Of course you could have multiple instances with
-    different configs set up in your webserver, but if you use factories,
-    you can have multiple instances of the same application running in the
-    same application process which can be handy.
+1.  为了测试。这样每一种配置设定，你都可以创建基于该配置的应用实例。
+2.  多个实例。想象一下你需要运行同一个应用的不同版本。当然你也可以在你的web服务器上做和多类似的配置以实现这个目的，但是如果你用了工厂，即使要在一个应用线程下同时运行同一个应用的不同实例也不会让你无从下手。
 
-So how would you then actually implement that?
+那么该如何实现呢?
 
-Basic Factories
+一个基本的工厂
 ---------------
 
-The idea is to set up the application in a function.  Like this::
+也就是说在方法里配置应用程序，就像这样::
 
     def create_app(config_filename):
         app = Flask(__name__)
@@ -37,10 +28,7 @@ The idea is to set up the application in a function.  Like this::
 
         return app
 
-The downside is that you cannot use the application object in the blueprints
-at import time.  You can however use it from within a request.  How do you
-get access to the application with the config?  Use
-:data:`~flask.current_app`::
+这么做的不足之处是你不能在import蓝图后在蓝图内调用应用程序对象。但是你也可以在一个请求里面调用它。怎么拿到应用程序的当前配置呢？使用 :data:`~flask.current_app`::
 
     from flask import current_app, Blueprint, render_template
     admin = Blueprint('admin', __name__, url_prefix='/admin')
@@ -49,27 +37,22 @@ get access to the application with the config?  Use
     def index():
         return render_template(current_app.config['INDEX_TEMPLATE'])
 
-Here we look up the name of a template in the config.
+在上述例子中，我们尝试了在当前配置里查一个模板的名称。
 
-Using Applications
+使用应用程序
 ------------------
 
-So to use such an application you then have to create the application
-first.  Here an example `run.py` file that runs such an application::
+要使用应用程序我们就必须先创建它。如下面的例子所示，有一个  `run.py` 文件负责执行应用::
 
     from yourapplication import create_app
     app = create_app('/path/to/config.cfg')
     app.run()
 
-Factory Improvements
+更好的工厂
 --------------------
 
-The factory function from above is not very clever so far, you can improve
-it.  The following changes are straightforward and possible:
+上面提到的工厂方法内容还是有点蠢，你还可以对它继续改进。以下就是一些既简单又可行的方法:
 
-1.  make it possible to pass in configuration values for unittests so that
-    you don't have to create config files on the filesystem
-2.  call a function from a blueprint when the application is setting up so
-    that you have a place to modify attributes of the application (like
-    hooking in before / after request handlers etc.)
-3.  Add in WSGI middlewares when the application is creating if necessary.
+1.  让单元测试接受配置变量变得可行，这样一来你就不用在文件系统内单独开辟配置文件了。
+2.  在应用执行的同时调用蓝图里的某一个方法，这样你就有地方修改应用的一些特性（比如挂上诸如before / after request handlers（请求前/后执行者）的操作）。
+3.  如果需要的话，可以在创建应用时添加WSGI中间件。
