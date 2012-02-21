@@ -32,11 +32,11 @@ early by returning a response.  In contrast all signal handlers are
 executed in undefined order and do not modify any data.
 
 Flask在一些地方就使用了信号并且在其他的扩展中信号可能被更多的应用。必须牢记的是信号是
-用来提醒它的订阅端的但是不建议订阅端去改变数据本身。你会注意到信号和python内置的装饰器
-有很多类似的地方（例如: :data:`~flask.request_started`与:meth:`~flask.Flask.before_request`看上去十分相识）。但它们的运作方式有所不同。
-:meth:`~flask.Flask.before_request`的处理器是按照特定的顺序执行的并且可以在处理
-请求时提前返回结果。但是所有的信号处理器是没有特定的执行顺序的而起它们也不会修改任何的
-数据。
+用来提醒它的订阅端的但是不建议订阅端去改变数据本身。你会注意到信号和内置的装饰器有很多
+类似的地方（例如: :data:`~flask.request_started` 与 :meth:`~flask.Flask.before_request`
+看上去十分相识）。但它们的运作方式有所不同。:meth:`~flask.Flask.before_request` 的处理
+器是按照特定的顺序执行的并且可以在处理请求时提前返回结果。但是所有的信号处理器是没有特
+定的执行顺序的而起它们也不会修改任何的数据。
 
 The big advantage of signals over handlers is that you can safely
 subscribe to them for the split of a second.  These temporary
